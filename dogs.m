@@ -1,5 +1,5 @@
 clear
-close all
+close all %% haha blah
 %% arduino generator
 cd 'Z:\Lab Member Folders\Margaret Swerdloff\EEG-gait\EEG\DSI_data\All'
 filename_duration = 'Maggie_Sit_Mickey1_leftBox_v2_0001_duration_raw.csv';
