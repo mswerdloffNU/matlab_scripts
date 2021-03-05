@@ -144,7 +144,7 @@ for mm = 1
                 if congruences(bb) == 0 
                     fakeTones(aa+5) = 4; % Target word (Hard)
                 elseif congruences(bb) == 1 
-                    fakeTones(aa+5) = 5; % Non-Target Target word (Hard)
+                    fakeTones(aa+5) = 5; % Non-Target Target word (Easy)
                 end
                 aa = aa+10;
                 bb = bb+1;
@@ -154,30 +154,45 @@ for mm = 1
     numel(find(fakeTones==4)) numel(find(fakeTones==5))]
 
 %%
-fakeTones_tto = [];
-fakeTones_easy = [];
-fakeTones_hard = [];
+fakeTones_tto = zeros(1,numel(fakeTones));
+fakeTones_easy = zeros(1,numel(fakeTones));
+fakeTones_hard = zeros(1,numel(fakeTones));
 aa = 1; bb = 1; cc = 1;
 for ii = 1:numel(fakeTones)
     if fakeTones(ii) == 2
-        fakeTones_tto(ii) = fakeTones(ii);
+        fakeTones_tto(ii) = 1;
+        fakeTones_hard(ii) = 0;
+        fakeTones_easy(ii) = 0;
         aa = aa+1;
     elseif fakeTones(ii) == 4
-        fakeTones_easy(ii) = fakeTones(ii);
+        fakeTones_easy(ii) = 1;
+        fakeTones_hard(ii) = 0;
+        fakeTones_tto(ii) = 0;
         bb = bb+1;
     elseif fakeTones(ii) == 5
-        fakeTones_hard(ii) = fakeTones(ii);
+        fakeTones_hard(ii) = 1;
+        fakeTones_easy(ii) = 0;
+        fakeTones_tto(ii) = 0;
         cc = cc+1;
     end
 end
+%%
 figure()
 hold on
-plot(1:numel(fakeTones_tto),ones(1,numel(fakeTones_tto))*.1,'b*')
-plot(1:numel(fakeTones_easy),ones(1,numel(fakeTones_easy))*.12,'m*')
-plot(1:numel(fakeTones_hard),ones(1,numel(fakeTones_hard))*.14,'c*')
+% plot(1:1800,fakeTones,'b*')
+plot(1:1800,fakeTones_tto,'b*') % Target Tone-only
+plot(1:1800,fakeTones_easy,'m*') % Target word (Hard)
+plot(1:1800,fakeTones_hard,'c*') % Non-Target Target word (Easy)
 
-% plot(fakeTones_tto,ones(1,numel(fakeTones_tto)),'b*')
-
+%%
+        figure
+        plot(word)
+        ylabel('word')
+        hold on
+        plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+        plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
+        plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
+        plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
         %% determine when prov tones occur
         
         clear td out datecell stroopDurations
