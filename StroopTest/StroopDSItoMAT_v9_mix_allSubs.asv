@@ -1,7 +1,7 @@
 cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
 
-subs = {'S023_SA'};
-% subs = {'S020_SA','S021_SA_0001','S022_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
+subs = {'S024_SA'};
+% subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
 % 'S032_SA','S033_SA','S034_SA','S034_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 
 %Maggie_stroopStimuli_v2_unRand_adj_allEasy_v6_hard_S005
@@ -28,10 +28,12 @@ for mm = 1
         folder_save = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1';
         
         % specify times and channels
+        addpath('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
         startRow = 17; % time = 0
         endRow = inf; % time = end of trial
         [Time_duration,LE,F4,C4,P4,P3,C3,F3,Trigger_duration,Time_Offset,ADC_Status,ADC_Sequence,Event,Comments] = importRaw(filename_duration, startRow, endRow); % import
-        
+        [Time_xx,LE_xx,F4_xx,C4_xx,P4_xx,P3_xx,C3_xx,F3_xx,Trigger_xx,Time_Offset_xx,ADC_Status_xx,ADC_Sequence_xx,Event_xx,Comments_xx] = importRaw('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\EEG\DSI_data\StroopAudio\study1\S025_SA_0001_raw.csv', startRow, endRow); % import
+
         % load stroop test results
         stroop_data = strrep(stroop_data_sub,'Sub',sub)
         %data_loc = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\StroopTestResults\Pilot2\',stroop_data);
@@ -106,6 +108,54 @@ for mm = 1
             etime(pauseTimes(4,:),pauseTimes(3,:))/60 ...
             etime(endTime,pauseTimes(4,:))/60];
 
+        % calculate number of seconds difference between drts and
+        % TriggerHub start/stop
+        (etime(endTime,startTime))-abs((cursor_info(1).DataIndex-cursor_info(2).DataIndex)/300)
+        % number of target (incongruent) words in each session
+        numel(find(pretoneson(1:40,1)==0))
+        numel(find(pretoneson(41:80,1)==0))
+        numel(find(pretoneson(81:120,1)==0))
+        
+        %% create expanded list from pretoneson
+        expList = [];
+        aa = 1;
+        for ii = 1:numel(pretoneson)
+            if pretoneson(ii) == 1
+                expList(aa) = 1;
+                expList(aa+1) = 0;
+                aa = aa+2;
+            elseif pretoneson(ii) == 0
+                expList(aa) = 0;
+                aa = aa+1;
+            end
+        end
+        
+        %% create fake list of Tones
+        fakeTones = [];
+        aa = 1;
+        bb = 1;
+        for ii = 1:numel(expList)
+            if expList(ii) == 1
+                fakeTones(aa:aa+9) = 1; % Non-target tone-only
+                fakeTones(aa+5) = 2; % Target Tone-only
+                aa = aa+10;
+            elseif expList(ii) == 0
+                fakeTones(aa:aa+9) = 3; % Non-target word
+                if congruences(bb) == 0 
+                    fakeTones(aa+5) = 4; % Target word (Hard)
+                elseif congruences(bb) == 1 
+                    fakeTones(aa+5) = 5; % Non-Target Target word (Hard)
+                end
+                aa = aa+10;
+                bb = bb+1;
+            end
+        end
+[numel(find(fakeTones==1)) numel(find(fakeTones==2)) numel(find(fakeTones==3)) ...
+    numel(find(fakeTones==4)) numel(find(fakeTones==5))]
+
+fakeTones_tto = 
+figure()
+plot(fakeTones_tto,ones(1,numel(fakeTones_tto)),'b*')
         %% determine when prov tones occur
         
         clear td out datecell stroopDurations

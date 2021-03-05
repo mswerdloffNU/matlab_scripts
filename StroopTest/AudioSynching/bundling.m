@@ -8,25 +8,29 @@
 %(4) Subtract that time difference from the lagging signal
 %% IMPORT FILES
 clearvars
+% subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
+% 'S032_SA','S033_SA','S034_SA','S034_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 %%
-cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\Matlab scripts\StroopTest\AudioSynching')
+cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest\AudioSynching')
 addpath('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\EEG\audio_data\StroopAudio_Pilot2')
 % importAudio('S020.m4a')
-s = 15; % number of seconds you want to read in
+s1 = 1*12.5; % number of seconds you want to read in
+s0 = s1; % change here if need to crop initial audio
 fs = 44100;
-audio = audioread('S020.m4a',[1 s*fs]);
+audio = audioread('S021.m4a',[s1*fs-(s0*fs)+1 s1*fs]);
 figure
-plot(audio(1:s*fs))
+plot(audio)
 %%
 addpath('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\EEG\DSI_data\StroopAudio\study1')
-csvAccel = importAccel('S020_SA_Accel.csv');
+csvAccel = importAccel('S021_SA_0001_Accel.csv');
 accel_all = csvAccel{:,4}+1.02;
 figure
 plot(accel_all)
 %% SPECIFY START TIMES
-firsta = {cursor_info(1).Position}.';
+cursor_info_sub = cursor_info1;
+firsta = {cursor_info_sub(1).Position}.';
 first_acc = firsta{1,1}(1,1);
-lasta = {cursor_info(2).Position}.';
+lasta = {cursor_info_sub(2).Position}.';
 last_acc = lasta{1,1}(1,1);
 if last_acc < first_acc
     last_acc_old = last_acc;
@@ -34,7 +38,8 @@ if last_acc < first_acc
     first_acc = last_acc_old;
 end
 accel = accel_all(first_acc:last_acc);
-%% Plot just the knocks for accel and audio
+
+% Plot just the knocks for accel and audio
 figure
 subplot(2,1,1)
 plot(audio)
@@ -51,11 +56,11 @@ plot(-audio,'-')
 findpeaks(-audio,'MinPeakDistance',10000,'SortStr','descend','MinPeakHeight',.15)
 subplot(4,1,3)
 plot(accel,'-')
-findpeaks(accel,'MinPeakDistance',2,'SortStr','descend','MinPeakHeight',.025);
+findpeaks(accel,'MinPeakDistance',2,'SortStr','descend','MinPeakHeight',.020);
 subplot(4,1,4)
 plot(-accel,'-')
-findpeaks(-accel,'MinPeakDistance',2,'SortStr','descend','MinPeakHeight',.025);
-%% PLOT PEAKS
+findpeaks(-accel,'MinPeakDistance',2,'SortStr','descend','MinPeakHeight',.020);
+% PLOT PEAKS
 
 [pks_audp,locs_audp]=findpeaks(audio,'MinPeakDistance',10000,'SortStr','descend','MinPeakHeight',.15);
 [pks_audn,locs_audn]=findpeaks(-audio,'MinPeakDistance',10000,'SortStr','descend','MinPeakHeight',.15);
@@ -68,11 +73,12 @@ locs_audn_sort = sort(locs_audn);
 locs_accp_sort = sort(locs_accp);
 locs_accn_sort = sort(locs_accn);
 
-%% CONVERT X-AXIS TO TIME
+%% PLOT SIGNAL AND PEAKS ON TIME AXIS
+% CONVERT X-AXIS TO TIME
 t_aud = (1:length(audio))/fs;
 t_acc_all = csvAccel{:,1}';
 t_acc = t_acc_all(first_acc:last_acc);
-%% PLOT SIGNAL AND PEAKS ON TIME AXIS
+% Plot
 figure
 subplot(2,1,1)
 hold on
@@ -96,13 +102,13 @@ xlabel('Time (s)')
 
 
 %% CALCULATE SHIFT NEEDED
-shift = -89; %guesstimate
+shift = -35.5; %guesstimate
 
 figure %NO SHIFT
 hold on
 plot(t_aud,audio,'-')
-plot(t_aud(locs_audp),pks_audp,'mo','MarkerSize',6)
-plot(t_aud(locs_audn),-pks_audn,'ko','MarkerSize',6)
+plot(t_aud(locs_audp),pks_audp,'m*','MarkerSize',6)
+plot(t_aud(locs_audn),-pks_audn,'k*','MarkerSize',6)
 hold on
 plot(t_acc+shift,accel+.25,'g-')
 plot(t_acc(locs_accp)+shift,pks_accp+.25,'mo','MarkerSize',6)
@@ -133,7 +139,7 @@ plot(t_acc,accel,'-','LineWidth',1.5)
 plot(t_acc(locs_accp),pks_accp,'bo','MarkerSize',6)
 plot(t_acc(locs_accn),-pks_accn,'bo','MarkerSize',6)
 ylabel('Aligned')
-
+shift_avg
 %%
 % to bundle, would need to resample to the same sampling rate as the EEG
 
