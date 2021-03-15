@@ -110,7 +110,10 @@ for mm = 1
 
         % calculate number of seconds difference between drts and
         % TriggerHub start/stop
-        (etime(endTime,startTime))-abs((cursor_info(1).DataIndex-cursor_info(2).DataIndex)/300)
+        (etime(endTime,startTime))/60
+        abs((cursor_info(1).DataIndex-cursor_info(2).DataIndex)/300)/60
+        (Time_duration(cursor_info(2).DataIndex)-Time_duration(cursor_info(1).DataIndex))/60
+        
         % number of target (incongruent) words in each session
         numel(find(pretoneson(1:40,1)==0))
         numel(find(pretoneson(41:80,1)==0))
@@ -185,14 +188,50 @@ plot(1:1800,fakeTones_easy,'m*') % Target word (Hard)
 plot(1:1800,fakeTones_hard,'c*') % Non-Target Target word (Easy)
 
 %%
+for ii = 1:length(tone)-1
+    if tone(ii) == 0 && tone(ii+1) == 1
+        toneOn(ii+1) = ii+1;
+    end
+end
+idxTonesOn = find(toneOn);
+
+ for ii = 1:length(word)-1
+            if word(ii) == 0 && word(ii+1) == 1
+                wordOnset(ii+1) = ii+1;
+            end
+        end
+        idxWordsOn = find(wordOnset);
+        
+                
+        for ii = 1:length(tone)-1
+            if tone(ii) == 1 && tone(ii+1) == 0
+                toneOffset(ii+1) = ii+1;
+            end
+        end
+        idxTonesOff = find(toneOffset);
+        
+                
+        for ii = 1:length(word)-1
+            if word(ii) == 1 && word(ii+1) == 0
+                wordOffset(ii+1) = ii+1;
+            end
+        end
+        idxWordsOff = find(wordOffset);
+        %%
         figure
         plot(word)
         ylabel('word')
         hold on
         plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+        plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+        plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
+        plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
         plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
+        
+        %% create major matrix with all stim
+        
         %% determine when prov tones occur
         
         clear td out datecell stroopDurations
