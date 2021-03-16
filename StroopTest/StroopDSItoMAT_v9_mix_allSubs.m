@@ -232,6 +232,75 @@ idxTonesOn = find(toneOn);
         
         %% create major matrix with all stim
         
+        % fix fakeTones
+        fakeTones_tto2 = [0 fakeTones_tto];
+        fakeTones_easy2 = [0 fakeTones_easy];
+        fakeTones_hard2 = [0 fakeTones_hard];
+        
+        % initialize
+        idxTonesOn_tto = zeros(numel(idxTonesOn),1);
+        idxTonesOn_easy = zeros(numel(idxTonesOn),1);
+        idxTonesOn_hard = zeros(numel(idxTonesOn),1);
+        
+        % convert farkTones_tto, fakeTones_easy, and fakeTones_hard to idx
+        % to match idxTonesOn
+        for ii = 1:numel(idxTonesOn)
+            if fakeTones_tto2(ii) == 1
+                idxTonesOn_tto(ii) = idxTonesOn(ii);
+            end
+            if fakeTones_easy2(ii) == 1
+                idxTonesOn_easy(ii) = idxTonesOn(ii);
+            end
+            if fakeTones_hard2(ii) == 1
+                idxTonesOn_hard(ii) = idxTonesOn(ii);
+            end
+        end
+        
+        [numel(find(idxTonesOn_tto)) numel(find(idxTonesOn_easy)) numel(find(idxTonesOn_hard))]
+
+        %% replot
+                
+        figure
+        plot(word)
+        ylabel('word')
+        hold on
+        plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+        plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+        plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
+        plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
+        plot(idxTonesOn_tto,ones(1,numel(idxTonesOn_tto)),'b*')       
+        plot(idxTonesOn_easy,ones(1,numel(idxTonesOn_easy)),'m*')
+        plot(idxTonesOn_hard,ones(1,numel(idxTonesOn_hard)),'c*')
+
+        %% create toneLabel
+        toneLabel = zeros(numel(Time_duration),1);
+        idxTonesOn_nz = nonzeros(idxTonesOn);
+        idxTonesOff_nz = nonzeros(idxTonesOff);
+        idxWordsOn_nz = nonzeros(idxWordsOn);
+        idxWordsOff_nz = nonzeros(idxWordsOff);
+        idxTonesOn_tto_nz = nonzeros(idxTonesOn_tto);
+        idxTonesOn_easy_nz = nonzeros(idxTonesOn_easy);
+        idxTonesOn_hard_nz = nonzeros(idxTonesOn_hard);
+        
+        for ii = 1:numel(idxTonesOn_nz)
+            toneLabel(idxTonesOn_nz(ii)) = 1;
+            toneLabel(idxTonesOff_nz(ii)) = 2;
+        end
+        fst=numel(find(toneLabel))
+        
+        for ii = 1:numel(idxWordsOn_nz)
+            toneLabel(idxWordsOn_nz(ii)) = 3;
+            toneLabel(idxWordsOff_nz(ii)) = 4;
+        end
+        scnd=numel(find(toneLabel))
+        
+        for ii = 1:numel(idxTonesOn_tto_nz)
+            toneLabel(idxTonesOn_tto_nz(ii)) = 5;
+            toneLabel(idxTonesOn_easy_nz(ii)) = 6;
+            toneLabel(idxTonesOn_hard_nz(ii)) = 7;
+        end
+        thd=numel(find(toneLabel))
+        
         %% determine when prov tones occur
         
         clear td out datecell stroopDurations
