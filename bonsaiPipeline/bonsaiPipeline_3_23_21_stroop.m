@@ -91,9 +91,10 @@ sub = subs{i}
     
     %%
     stim = ToneLabelCatEq';
+    tbl_raw_stim = [tbl_raw(1:7,:); stim];
     cd(loc_sub)
     str_mat = strrep(location,'_raw.csv','_raw.mat'); % table of EEG data (.mat)
-    save(str_mat,'tbl_raw'); % re-save raw table with updated event values
+    save(str_mat,'tbl_raw_stim'); % re-save raw table with updated event values
     
      %% plot to check everything is aligned
 %     tbl_raw_alltrials = tbl_raw;
