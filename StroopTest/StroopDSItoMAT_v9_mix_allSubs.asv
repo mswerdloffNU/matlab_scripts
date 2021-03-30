@@ -41,18 +41,14 @@ for mm = 1
         startStop_data = strrep(stroop_data_sub_startStop,'Sub',sub)
         %data_loc = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\StroopTestResults\Pilot2\',stroop_data);
         data_loc = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\StroopTestResults\study1\renamed\',stroop_data);
+        startStops = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\',startStop_data);
         data = load('-mat', data_loc);
-        startStops = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\',sub,'\',startStop_data);
-        loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\',sub);
-        cd(loc_sub)
-        
         if isfile(startStops)
             startStop = load('-mat',startStops);
         else
             sprintf('you will have to specify cursor_info for startStops')
         end
-        cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
-
+        
         folder = folder_save;
         congruences = data.congruences;
         pretoneson = data.pretoneson;
@@ -89,16 +85,14 @@ for mm = 1
         plot(tone)
         ylabel('tone')
         
-        cd(loc_sub)
         if ~exist('startStop','var')
             pause
             sprintf('select then save cursor_info!')
-            save(stroop_data_sub_startStop,'cursor_info'); % save cursor data
+            pause
         else
             cursor_info = startStop.cursor_info;
         end
-        cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
-
+        
 %         figure
 %         plot(word+1,'b-')
 %         hold on
@@ -253,10 +247,10 @@ idxTonesOn = find(toneOn);
             plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
             plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
             plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
-        elseif strfind(sub,'S027_SA')==1
-            plot(idxTonesOn,[1 1 fakeTones_tto],'b*') % Target Tone-only
-            plot(idxTonesOn,[1 1 fakeTones_easy],'m*') % Target word (Hard)
-            plot(idxTonesOn,[1 1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
+                    if strfind(sub,'S024_SA')==1
+            plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
+            plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
+            plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
         else
             plot(idxTonesOn,[fakeTones_tto],'b*') % Target Tone-only
             plot(idxTonesOn,[fakeTones_easy],'m*') % Target word (Hard)
@@ -268,11 +262,7 @@ idxTonesOn = find(toneOn);
         if strfind(sub,'S024_SA')==1
             fakeTones_tto2 = [0 fakeTones_tto];
             fakeTones_easy2 = [0 fakeTones_easy];
-            fakeTones_hard2 = [0 fakeTones_hard];        
-        elseif strfind(sub,'S027_SA')==1
-            fakeTones_tto2 = [0 0 fakeTones_tto];
-            fakeTones_easy2 = [0 0 fakeTones_easy];
-            fakeTones_hard2 = [0 0 fakeTones_hard];
+            fakeTones_hard2 = [0 fakeTones_hard];
         else
             fakeTones_tto2 = [fakeTones_tto];
             fakeTones_easy2 = [fakeTones_easy];

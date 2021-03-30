@@ -1,18 +1,16 @@
-subs = {'S015','S016','S017','S018'};
+subs = {'S024_SA'};
 for i = 1:numel(subs)
     clearvars -except subs i
     sub = subs{i}
-    loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\Pilot2\',sub);
+    loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\',sub);
     filePath=loc_sub;
     %% select file
     cd(loc_sub)
     Files_sub = dir('*2_allTrials.mat');
     for k=1:length(Files_sub)
         filename=Files_sub(k).name % file to be converted
-        if strfind(filename, 'v5')
-            Files_sub(k).session = 'v5';
-        elseif strfind(filename, 'v6')
-            Files_sub(k).session = 'v6';
+        if strfind(filename, 'SA')
+            Files_sub(k).session = 'SA';
         end
     end
     T = struct2table(Files_sub); % convert the struct array to a table
@@ -42,7 +40,7 @@ for i = 1:numel(subs)
         erpText = strrep(location,'.mat','_ICA_Num.txt');
         
         %% move to EEGLAB
-        cd 'C:\Users\mswerdloff\eeglab14_1_2b'
+        cd 'C:\Users\mswerdloff\eeglab\eeglab2021_0'
         eeglab
         
         %% open new set

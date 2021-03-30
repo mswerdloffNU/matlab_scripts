@@ -42,7 +42,7 @@ for i = 1:numel(subs)
         erpText = strrep(location,'.mat','_ICA_Num.txt');
         
         %% move to EEGLAB
-        cd 'C:\Users\mswerdloff\eeglab\eeglab2021_0\'
+        cd 'C:\Users\mswerdloff\eeglab14_1_2b'
         eeglab
         
         %% open new set
