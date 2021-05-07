@@ -2,6 +2,7 @@ subs = {'S026_SA_0002'};
 % subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
 % 'S032_SA','S033_SA','S034_SA','S034_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 filename_location = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\DSI_data\StroopAudio\study1\';
+addpath('C:\Users\mswerdloff\Documents\GitHub\matlab_scripts\StroopTest')
 
 for i = 1:numel(subs)
 % clearvars -except subs i
@@ -22,22 +23,23 @@ sub = subs{i}
     fnameEqLoc=strcat(fnameLoc,fnameEq);
     
     %% Initialize Matrices and Strings
-    ToneLabelCatEq = [];
-    Time_duration = []; LE = []; F4 = []; C4 = []; P4 = []; P3 = []; C3 = []; ...
-        F3 = []; Trigger = []; Time_Offset = []; ADC_Status = []; ADC_Sequence = []; ...
-        Event = []; Comments = [];
-    clear str_mat str_events str_events_csv
-    Pz_LE = []; F4_LE = []; C4_LE = []; P4_LE = []; P3_LE = []; C3_LE = []; F3_LE = [];
-    tbl_raw = [];
-    stim = [];
-    tbl_raw_stim = [];
-    tbl_detrend = [];
-    a1 = []; b1 = [];
-    tbl_filt_a_b_1 = []; tbl_filt_a_b_2 = []; tbl_filt_a_b_4 = [];
-    tbl_filt_a_b_1r = []; tbl_filt_a_b_2r = []; tbl_filt_a_b_4r = [];
-    tbl_filt_a_b_1_tr = []; tbl_filt_a_b_2_tr = []; tbl_filt_a_b_4_tr = [];
-    tbl_filt_a_b_1_tr_r = []; tbl_filt_a_b_2_tr_r = []; tbl_filt_a_b_4_tr_r = [];
-    X = [];
+%     ToneLabelCatEq = [];
+%     Time_duration = []; LE = []; F4 = []; C4 = []; P4 = []; P3 = []; C3 = []; ...
+%         F3 = []; Trigger = []; Time_Offset = []; ADC_Status = []; ADC_Sequence = []; ...
+%         Event = []; Comments = [];
+%     clear str_mat str_events str_events_csv
+%     Pz_LE = []; F4_LE = []; C4_LE = []; P4_LE = []; P3_LE = []; C3_LE = []; F3_LE = [];
+%     tbl_raw = [];
+%     stim = [];
+%     tbl_raw_stim = [];
+%     tbl_detrend = [];
+%     a1 = []; b1 = [];
+%     tbl_filt_a_b_1 = []; tbl_filt_a_b_2 = []; tbl_filt_a_b_4 = [];
+%     tbl_filt_a_b_1r = []; tbl_filt_a_b_2r = []; tbl_filt_a_b_4r = [];
+%     tbl_filt_a_b_1_tr = []; tbl_filt_a_b_2_tr = []; tbl_filt_a_b_4_tr = [];
+%     tbl_filt_a_b_1_tr_r = []; tbl_filt_a_b_2_tr_r = []; tbl_filt_a_b_4_tr_r = [];
+%     X = [];
+
     %% import ToneLabelCat
     startRow = 1;
     endRow = inf;

@@ -1,7 +1,8 @@
-clearvars
-cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
+% clearvars
+% cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
+cd(loc_scripts)
 
-subs = {'S027_SA'};
+% subs = {'S027_SA'};
 % subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
 % 'S032_SA','S033_SA','S034_SA','S034_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 
@@ -20,7 +21,7 @@ for mm = 1
     end
     for i = 1:numel(subs)
         %% load files
-        clearvars -except subs i mm level stroop_data_sub stroop_data_sub_startStop filename toneCategory_all timingError_all
+%         clearvars -except subs i mm level stroop_data_sub stroop_data_sub_startStop filename toneCategory_all timingError_all
         sub = subs{i};
         numEasy=5;
         % load dsi csv file
@@ -211,6 +212,7 @@ plot(1:1800,fakeTones_easy,'m*') % Target word (Hard)
 plot(1:1800,fakeTones_hard,'c*') % Non-Target Target word (Easy)
 
 %%
+toneOn = [];
 for ii = 1:length(tone)-1
     if tone(ii) == 0 && tone(ii+1) == 1
         toneOn(ii+1) = ii+1;
@@ -218,29 +220,30 @@ for ii = 1:length(tone)-1
 end
 idxTonesOn = find(toneOn);
 
- for ii = 1:length(word)-1
-            if word(ii) == 0 && word(ii+1) == 1
-                wordOnset(ii+1) = ii+1;
-            end
-        end
-        idxWordsOn = find(wordOnset);
-        
-                
-        for ii = 1:length(tone)-1
-            if tone(ii) == 1 && tone(ii+1) == 0
-                toneOffset(ii+1) = ii+1;
-            end
-        end
-        idxTonesOff = find(toneOffset);
-        
-                
-        for ii = 1:length(word)-1
-            if word(ii) == 1 && word(ii+1) == 0
-                wordOffset(ii+1) = ii+1;
-            end
-        end
-        idxWordsOff = find(wordOffset);
-        %%
+wordOnset = [];
+for ii = 1:length(word)-1
+    if word(ii) == 0 && word(ii+1) == 1
+        wordOnset(ii+1) = ii+1;
+    end
+end
+idxWordsOn = find(wordOnset);
+
+toneOffset = [];
+for ii = 1:length(tone)-1
+    if tone(ii) == 1 && tone(ii+1) == 0
+        toneOffset(ii+1) = ii+1;
+    end
+end
+idxTonesOff = find(toneOffset);
+
+wordOffset = [];
+for ii = 1:length(word)-1
+    if word(ii) == 1 && word(ii+1) == 0
+        wordOffset(ii+1) = ii+1;
+    end
+end
+idxWordsOff = find(wordOffset);
+%%
         figure
         plot(word)
         ylabel('word')
@@ -403,7 +406,7 @@ idxTonesOn = find(toneOn);
         %%
         cd(folder)
         toneLabel = strrep(stroop_data,'.mat','_ToneLabel.txt');
-        dlmwrite(toneLabel,ToneLabel,'delimiter','\t','newline','pc');
+%         dlmwrite(toneLabel,ToneLabel,'delimiter','\t','newline','pc');
         %%
     end
 end

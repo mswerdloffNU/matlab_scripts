@@ -20,7 +20,7 @@ for mm = 1
     end
     for i = 1:numel(subs)
         %% load files
-%         clearvars -except subs i mm level stroop_data_sub stroop_data_sub_startStop filename toneCategory_all timingError_all
+        clearvars -except subs i mm level stroop_data_sub stroop_data_sub_startStop filename toneCategory_all timingError_all
         sub = subs{i};
         numEasy=5;
         % load dsi csv file
@@ -408,7 +408,6 @@ idxTonesOn = find(toneOn);
     end
 end
 
-sprintf('Troubleshooting complete!')
         
         
         
