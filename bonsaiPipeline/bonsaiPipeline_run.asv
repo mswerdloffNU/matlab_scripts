@@ -12,21 +12,29 @@ subs = {'S027_SA'}; % stim conversion
 loc_main = 'C:\Users\mswerdloff\Documents\GitHub\matlab_scripts\';
 loc_scripts = [loc_main 'StroopTest'];
 loc_bonsaiPipeline = [loc_main 'bonsaiPipeline'];
+loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
+loc_dsi = [loc_data 'EEG\DSI_data\StroopAudio\study1\'];
+loc_save = [loc_data 'EEG\Matlab_data\StroopAudio\study1'];
+loc_stroopData = [loc_data 'StroopTestResults\study1\renamed\'];
 
 %% Are you troubleshooting?
-if strfind(subs,'S027_SA')==1
-troubleshooting = 1; % 1 if troubleshooting, 0 if not troubleshooting
+if contains(subs,'S027') == 1
+    troubleshooting = 1; % 1 if troubleshooting
+else
+    troubleshooting = 0; % 0 if not troubleshooting
+end
 
 %% Voice to stim
 % gotta make this one!
 
 %% Stim converstion
 cd(loc_scripts)
-if troublshooting == 0
-    StroopDSItoMAT_v10_mix_allSubs
+if troubleshooting == 0
+    StroopDSItoMAT_v10_mix_allSubs % regular file
 elseif troubleshooting == 1
-    StroopDSItoMAT_v10_mix_allSubs_trblsht
+    StroopDSItoMAT_v10_mix_allSubs_trblsht % troubleshooting file
 end
+
 %% Part 1
 cd(loc_bonsaiPipeline)
 % bonsaiPipeline_5_5_21_stroop

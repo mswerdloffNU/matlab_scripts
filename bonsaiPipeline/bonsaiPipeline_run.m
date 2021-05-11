@@ -12,6 +12,10 @@ subs = {'S027_SA'}; % stim conversion
 loc_main = 'C:\Users\mswerdloff\Documents\GitHub\matlab_scripts\';
 loc_scripts = [loc_main 'StroopTest'];
 loc_bonsaiPipeline = [loc_main 'bonsaiPipeline'];
+loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
+loc_dsi = [loc_data 'EEG\DSI_data\StroopAudio\study1\'];
+loc_save = [loc_data 'EEG\Matlab_data\StroopAudio\study1'];
+loc_stroopData = [loc_data 'StroopTestResults\study1\renamed\'];
 
 %% Are you troubleshooting?
 if contains(subs,'S027') == 1
@@ -26,9 +30,9 @@ end
 %% Stim converstion
 cd(loc_scripts)
 if troubleshooting == 0
-    StroopDSItoMAT_v10_mix_allSubs
+    StroopDSItoMAT_v10_mix_allSubs % regular file
 elseif troubleshooting == 1
-    StroopDSItoMAT_v10_mix_allSubs_trblsht
+    StroopDSItoMAT_v10_mix_allSubs_trblsht % troubleshooting file
 end
 
 %% Part 1
