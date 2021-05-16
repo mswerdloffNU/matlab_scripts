@@ -1,26 +1,22 @@
-subs = {'S026_SA_0002'};
-% subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
-% 'S032_SA','S033_SA','S034_SA','S034_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
-filename_location = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\DSI_data\StroopAudio\study1\';
-addpath('C:\Users\mswerdloff\Documents\GitHub\matlab_scripts\StroopTest')
+
+addpath(loc_scripts)
 
 for i = 1:numel(subs)
 % clearvars -except subs i
-sub = subs{i}
-    loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\',sub);
+    sub = subs{i}
+    loc_sub = [loc_save sub];
     
     %% arduino generator
     filename = 'Sub.dsi';
     filename_only = strrep(filename,'Sub',sub);
     filename_duration1 = strrep(filename_only,'.dsi','_duration_raw.csv');
-    filename_duration = strcat(filename_location,filename_duration1);
+    filename_duration = strcat(loc_dsi,filename_duration1);
     location = strrep(filename_only,'.dsi','_raw.csv');
     filename_tones = strrep(filename_only,'.dsi','.txt');
     filename_info = strrep(filename_only,'.dsi','_info_pt1.mat');
     setNameShort= strrep(filename_only,'_stroopStimuli.dsi',''); %'Maggie_stroopStimuli_v2_unRand_adj_allEasy_v3_AB02_raw';
     fnameEq =strrep(filename_only,'.dsi', '_v10_ToneLabel.txt');
-    fnameLoc = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\study1\';
-    fnameEqLoc=strcat(fnameLoc,fnameEq);
+    fnameEqLoc= [loc_save fnameEq];
     
     %% Initialize Matrices and Strings
 %     ToneLabelCatEq = [];
@@ -59,7 +55,7 @@ sub = subs{i}
     Fsp = 300; % sampling rate in Hz
     Fn = Fsp/2; % Nyquist frequency
     %cd 'C:\Users\maggi\Google Drive\Shared Drives\Northwestern\LeviHargroveLab\pipelinematlabfiles\Troubleshooting3_05Hz_30Hz'
-    cd 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\DSI_data\StroopAudio\study1'
+    cd(loc_dsi)
     
     % Outline:
     %% Import DSI data
@@ -206,18 +202,17 @@ sub = subs{i}
     ylabel('Potential (uV)')
     fnm = sprintf('Butterworth bandpass filtered data_%s.fig',setNameShort);
 %     savefig(fnm)
-    
-    %% save filtered EEG data
-    cd(loc_sub)
-    % cd 'D:\Other\transfer\data'
-    %cd 'C:\Users\maggi\Google Drive\Shared Drives\Northwestern\LeviHargroveLab\pipelinematlabfiles\Troubleshooting3_05Hz_30Hz'
+
+%% save filtered EEG data
+cd(loc_sub)
+if savefiles == 1
     str_mat = strrep(location,'_raw.csv','_filt_a_b_1_allTrials.mat'); % table of EEG data (.mat)
-%     save(str_mat,'tbl_filt_a_b_1_tr'); % save b,a butter -> filtfilt filtered data
+    save(str_mat,'tbl_filt_a_b_1_tr'); % save b,a butter -> filtfilt filtered data
     str_mat = strrep(location,'_raw.csv','_filt_a_b_2_allTrials.mat'); % table of EEG data (.mat)
-%     save(str_mat,'tbl_filt_a_b_2_tr'); % save b,a butter -> filtfilt filtered data
+    save(str_mat,'tbl_filt_a_b_2_tr'); % save b,a butter -> filtfilt filtered data
     str_mat = strrep(location,'_raw.csv','_filt_a_b_4_allTrials.mat'); % table of EEG data (.mat)
-%     save(str_mat,'tbl_filt_a_b_4_tr'); % save b,a butter -> filtfilt filtered data
-    
-    %%
+    save(str_mat,'tbl_filt_a_b_4_tr'); % save b,a butter -> filtfilt filtered data
+end
+   
 end
 sprintf('Make sure files are saved in the correct folder')

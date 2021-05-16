@@ -1,7 +1,8 @@
 for i = 1:numel(subs)
     %% load files
     sub = subs{i};
-    numEasy=5;
+    numEasy = 5;
+    numHard = 5;
     
     % import filenames
     stroop_data_sub = [sub '_v10.mat'];
@@ -17,8 +18,8 @@ for i = 1:numel(subs)
     
     % load stroop test results
     data = load('-mat', [loc_stroopData stroop_data_sub]);
-    startStops = [loc_save '\' sub '\' stroop_data_sub_startStop]; % save filename
-    loc_sub = [loc_save '\' sub];
+    startStops = [loc_save sub '\' stroop_data_sub_startStop]; % save filename
+    loc_sub = [loc_save sub];
 %     addpath(loc_sub)
     
     if isfile(startStops)
@@ -113,15 +114,15 @@ for i = 1:numel(subs)
     bb = 1;
     for ii = 1:numel(expList)
         if expList(ii) == 1
-            fakeTones(aa:aa+9) = 1; % Non-target tone-only
+            fakeTones(aa:aa+(numEasy+numHard-1)) = 1; % Non-target tone-only
             fakeTones(aa+5) = 2; % Target Tone-only
             aa = aa+10;
         elseif expList(ii) == 0
-            fakeTones(aa:aa+9) = 3; % Non-target word
+            fakeTones(aa:aa+(numEasy+numHard-1)) = 3; % Non-target word
             if congruences(bb) == 0
-                fakeTones(aa+5) = 4; % Target word (Hard)
+                fakeTones(aa+numHard) = 4; % Target word (Hard)
             elseif congruences(bb) == 1
-                fakeTones(aa+5) = 5; % Non-Target Target word (Easy)
+                fakeTones(aa+numHard) = 5; % Non-Target Target word (Easy)
             end
             aa = aa+10;
             bb = bb+1;
@@ -204,7 +205,7 @@ for i = 1:numel(subs)
         plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
-    else
+    elseif numel(idxTonesOn) == numel(fakeTones_tto)
         plot(idxTonesOn,[fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[fakeTones_hard],'c*') % Non-Target Target word (Easy)
@@ -212,12 +213,29 @@ for i = 1:numel(subs)
     %% specify type of tone and word
     idxTonesOn_only = []; idxTonesOff_only = [];
     idxTonesOn_only_startIdx = [0 find(expList(2:end))*10];
-%     idxTonesOn_only_startIdx(1) = 1;
+    
     for ii = 1:numel(idxTonesOn_only_startIdx)
         toneStartIdx = idxTonesOn_only_startIdx(ii);
         idxTonesOn_only(:,ii) = idxTonesOn(toneStartIdx+1:toneStartIdx+10);
         idxTonesOff_only(:,ii) = idxTonesOff(toneStartIdx+1:toneStartIdx+10);
     end
+    
+    idxTonesOn_only_long  = idxTonesOn_only(:);
+    idxTonesOff_only_long = idxTonesOff_only(:);
+    
+    idxTonesOn_comb = idxTonesOn;
+    idxTonesOff_comb = idxTonesOff;
+    for ii = 1:numel(idxTonesOn_only_long)
+        [~,jj] = find(idxTonesOn_comb == idxTonesOn_only_long(ii));
+        [~,kk] = find(idxTonesOff_comb == idxTonesOff_only_long(ii));
+        idxTonesOn_comb(1,jj) = 0;
+        idxTonesOff_comb(1,kk) = 0;
+    end
+    numel(find(idxTonesOn_comb==0)) % should be 600
+    numel(find(idxTonesOff_comb==0)) % should be 600
+
+    idxTonesOn_comb_nz = nonzeros(idxTonesOn_comb);
+    idxTonesOff_comb_nz = nonzeros(idxTonesOff_comb);
     
     figure
     plot(word)
@@ -225,15 +243,13 @@ for i = 1:numel(subs)
     hold on
     plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
     plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-    plot(idxTonesOn_only(:),ones(1,numel(idxTonesOn_only)),'ro')
-    plot(idxTonesOff_only(:),ones(1,numel(idxTonesOff_only)),'r+')
-    plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
-    plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
-    plot(idxTonesOn_only(:),ones(1,numel(idxTonesOn_only)),'ro')
-    plot(idxTonesOff_only(:),ones(1,numel(idxTonesOff_only)),'r+')
-%     plot(idxTonesOn,[fakeTones_tto],'b*') % Target Tone-only
-%     plot(idxTonesOn,[fakeTones_easy],'m*') % Target word (Hard)
-%     plot(idxTonesOn,[fakeTones_hard],'c*') % Non-Target Target word (Easy)
+    plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ro')
+    plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'r+')
+    plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
+    plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
+    plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
+    plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
+    
     %% find intervals
     word_int = [];
     for ii = 1:numel(idxWordsOn)-1
@@ -246,9 +262,15 @@ for i = 1:numel(subs)
     end
     
     tonesOnly_int = [];
-    for ii = 1:numel(idxTonesOn)-1
+    for ii = 1:numel(idxTonesOn_only)-1
         tonesOnly_int(ii) = idxTonesOn_only(ii+1) - idxTonesOff_only(ii);
     end
+        
+    tonesComb_int = [];
+    for ii = 1:numel(idxTonesOn_comb_nz)-1
+        tonesComb_int(ii) = idxTonesOn_comb_nz(ii+1) - idxTonesOff_comb_nz(ii);
+    end
+    
     
     figure()
     subplot(2,1,1)
@@ -266,6 +288,7 @@ for i = 1:numel(subs)
     ylim([0,1500])
     ylabel('tones Only interval')
     xlabel('index')
+    
     %% identify errors
     tone_flag = zeros(numel(tone_int),1);
     for ii = 1:numel(tone_int)
@@ -280,52 +303,181 @@ for i = 1:numel(subs)
 
     tonesOnly_flag = zeros(numel(tonesOnly_int),1);
     for ii = 1:numel(tonesOnly_int)
-        if tonesOnly_int(ii) > 300
+        if tonesOnly_int(ii) > 100000
             tonesOnly_flag(ii) = 1;
         else 
             tonesOnly_flag(ii) = 2;
         end
     end
+    idxtonesOnly_flag = find(tonesOnly_flag == 1); 
     
-    idxtonesOnly_flag = find(tonesOnly_flag == 1);
+    figure
+    plot(tonesComb_int,'.')
+    ylim([0,1500])
+    ylabel('tones Combined interval')
+    xlabel('index')
+    
+    tonesComb_flag = zeros(numel(tonesComb_int),1);
+    for ii = 1:numel(tonesComb_int)
+        if tonesComb_int(ii) > 100 && tonesComb_int(ii) < 400
+            tonesComb_flag(ii) = 1;
+        else 
+            tonesComb_flag(ii) = 2;
+        end
+    end
+    [idxtonesComb_flag,~] = find(tonesComb_flag == 1);
+    
+    tonesComb_int_val = [];
+    for ii = 1:numel(idxtonesComb_flag)
+        tonesComb_int_val(ii) = tonesComb_int(idxtonesComb_flag(ii));
+    end
+    
+    figure
+    plot(tonesComb_int,'k.')
+    hold on
+    plot(idxtonesComb_flag,tonesComb_int_val,'r.')
+    ylim([0,1500])
+    ylabel('tones Combined interval')
+    xlabel('index')
+    
+    figure()
+    plot(word_int,'.')
+    ylim([0,4000])
+    ylabel('word interval')
     
     word_flag = zeros(numel(word_int),1);
     for ii = 1:numel(word_int)
-        if word_int(ii) < 450
+        if word_int(ii) < 320
             word_flag(ii) = 1;
         else 
             word_flag(ii) = 2;
         end
     end
+    [idxword_flag,~] = find(word_flag == 1);
     
-    idxword_flag = find(word_flag == 1);
+    word_int_val = [];
+    for ii = 1:numel(idxword_flag)
+        word_int_val(ii) = word_int(idxword_flag(ii));
+    end
+    
+    figure
+    plot(word_int,'k.')
+    hold on
+    plot(idxword_flag,word_int_val,'r.')
+    ylim([0,4000])
+    ylabel('word interval')
+    xlabel('index')
 
     %
-    figure
-    plot(word)
-    ylabel('word')
-    hold on
-    plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
-    plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-    plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
-    plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
-    if isempty(idxtone_flag) == 0
-%         for ii = 1:numel(idxtone_flag)
-%             plot(idxTonesOff(idxtone_flag(ii)),1,'r*')
-%             plot(idxTonesOn(idxtone_flag(ii)),1,'r*')
-%         end
-        for ii = 1:numel(idxtonesOnly_flag)
-            plot(idxTonesOff_only(idxtonesOnly_flag(ii)),1,'ro')
-            plot(idxTonesOn_only(idxtonesOnly_flag(ii)),1,'ro')
+    if checktones == 1
+        
+        for jj = 1:numel(idxtonesOnly_flag)
+            figure
+            plot(word)
+            ylabel('word')
+            hold on
+            plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+            plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+            plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
+            plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
+            plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
+            plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
+            plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
+            plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
+            
+            if isempty(idxtonesOnly_flag) == 0
+                for ii = 1:numel(idxtonesOnly_flag)
+                    numel(idxtonesOnly_flag)
+                    plot(idxTonesOff_only(idxtonesOnly_flag(ii)),1,'r+')
+                    plot(idxTonesOn_only(idxtonesOnly_flag(ii)),1,'ro')
+                end
+            end
+            xlim([idxTonesOff_only(idxtonesOnly_flag(jj))-5000 idxTonesOff_only(idxtonesOnly_flag(jj))+5000])
+            pause
         end
+        
+        for jj = 1:numel(idxtonesComb_flag)
+        figure
+        plot(word)
+        ylabel('word')
+        hold on
+        plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+        plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+        plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
+        plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
+        plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
+        plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
+        plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
+        plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
+        
+        if isempty(idxtonesComb_flag) == 0
+            for ii = 1:numel(idxtonesComb_flag)
+                numel(idxtonesComb_flag)
+                plot(idxTonesOff_comb_nz(idxtonesComb_flag(ii)),1,'r+')
+                plot(idxTonesOn_comb_nz(idxtonesComb_flag(ii)),1,'ro')
+            end
+        end
+%         sprintf(jj,'out of',numel(idxtonesComb_flag))
+        xlim([idxTonesOff_comb_nz(idxtonesComb_flag(jj))-5000 idxTonesOff_comb_nz(idxtonesComb_flag(jj))+5000])
+        pause
     end
-        if isempty(idxword_flag) == 0
-%         for ii = 1:numel(idxword_flag)
-%             plot(idxWordsOff(idxword_flag(ii)),1,'r*')
-%             plot(idxWordsOn(idxword_flag(ii)),1,'r*')
-%         end
+    
     end
-%     xlim([idxTonesOff(idxtone_flag(1))-5000 idxTonesOff(idxtone_flag(1))+5000])
+    
+    if checkwords == 1
+        
+        if numel(idxword_flag) < 10
+            
+            for jj = 1:numel(idxword_flag)
+                figure
+                plot(word)
+                ylabel('word')
+                hold on
+                plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+                plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+                plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
+                plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
+                plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
+                plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
+                plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
+                plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
+                
+                for ii = 1:numel(idxword_flag)
+                    numel(idxword_flag)
+                    plot(idxWordsOff(idxword_flag(ii)),1,'r+')
+                    plot(idxWordsOn(idxword_flag(ii)),1,'ro')
+                end
+                
+                xlim([idxWordsOff(idxword_flag(jj))-5000 idxWordsOff(idxword_flag(jj))+5000])
+                pause
+                
+                
+            end
+            
+        else
+            figure
+            plot(word)
+            ylabel('word')
+            hold on
+            plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+            plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+            plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
+            plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
+            plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
+            plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
+            plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
+            plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
+            
+            if isempty(idxword_flag) == 0
+                for ii = 1:numel(idxword_flag)
+                    numel(idxword_flag)
+                    plot(idxWordsOff(idxword_flag(ii)),1,'r+')
+                    plot(idxWordsOn(idxword_flag(ii)),1,'ro')
+                end
+            end
+        end
+        
+    end
     %% fix errors in stimuli
     if strfind(sub,'S027_SA')==1
         idxWordsOn(1) = 0;
@@ -470,8 +622,10 @@ for i = 1:numel(subs)
     %%
     cd(loc_save)
     toneLabel = strrep(stroop_data_sub,'.mat','_ToneLabel.txt');
-    %         dlmwrite(toneLabel,ToneLabel,'delimiter','\t','newline','pc');
-    %%
+    if savefiles == 1
+        dlmwrite(toneLabel,ToneLabel,'delimiter','\t','newline','pc');
+    end
+    
 end
 
 sprintf('Troubleshooting complete!')

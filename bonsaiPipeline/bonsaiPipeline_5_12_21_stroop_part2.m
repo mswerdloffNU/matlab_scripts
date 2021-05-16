@@ -1,7 +1,6 @@
 for i = 1:numel(subs)
-    clearvars -except subs i
     sub = subs{i}
-    loc_sub = [loc_save '\' sub];
+    loc_sub = [loc_save sub];
     filePath=loc_sub;
     %% select file
     cd(loc_sub)
@@ -39,7 +38,7 @@ for i = 1:numel(subs)
         erpText = strrep(location,'.mat','_ICA_Num.txt');
         
         %% move to EEGLAB
-        cd 'C:\Users\mswerdloff\eeglab\eeglab2021_0'
+        cd(loc_eeglab)
         eeglab
         
         %% open new set
@@ -50,7 +49,7 @@ for i = 1:numel(subs)
         EEG = pop_chanevent(EEG, 8,'edge','leading','edgelen',0);
         [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
         EEG = eeg_checkset( EEG );
-        EEG = pop_editset(EEG, 'chanlocs', 'C:\Users\mswerdloff\eeglab14_1_2b\chanlocsDSI7.ced');
+        EEG = pop_editset(EEG, 'chanlocs', loc_ced);
         [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, startSet+1,'savenew',setpreICA,'gui','off');
         EEG = pop_runica(EEG, 'extended',startSet,'interupt','on');
@@ -58,7 +57,7 @@ for i = 1:numel(subs)
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, startSet+2,'savenew',setICA,'gui','off');
         EEG  = pop_creabasiceventlist( EEG , 'AlphanumericCleaning', 'on', 'BoundaryNumeric', { -99 }, 'BoundaryString', { 'boundary' }, 'Eventlist', eventlistA ); % GUI: 28-May-2019 11:10:03
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, startSet+3,'gui','off');
-        EEG  = pop_binlister( EEG , 'BDF', 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\EEG_data_withTriggers\binlist9.txt', 'ExportEL', eventlistB, 'IndexEL',  1, 'SendEL2', 'All', 'UpdateEEG', 'on', 'Voutput', 'EEG' ); % GUI: 28-May-2019 11:12:06
+        EEG  = pop_binlister( EEG , 'BDF', loc_binlist, 'ExportEL', eventlistB, 'IndexEL',  1, 'SendEL2', 'All', 'UpdateEEG', 'on', 'Voutput', 'EEG' ); % GUI: 28-May-2019 11:12:06
         [ALLEEG EEG] = eeg_store(ALLEEG, EEG, CURRENTSET);
         EEG = pop_epochbin( EEG , [-200.0  800.0],  'pre'); % GUI: 28-May-2019 11:14:08
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, startSet+4,'savenew',setBinned,'gui','off');
@@ -138,133 +137,143 @@ for i = 1:numel(subs)
         end
         idx1=nonzeros(idx1);idx2=nonzeros(idx2);idx3=nonzeros(idx3);idx4=nonzeros(idx4);idx5=nonzeros(idx5);idx6=nonzeros(idx6);idx7=nonzeros(idx7);idx8=nonzeros(idx8);
         [numel(find(idx1)) numel(find(idx2)) numel(find(idx3)) numel(find(idx4)) numel(find(idx5)) numel(find(idx6)) numel(find(idx7)) numel(find(idx8))]
- 
+
+%%
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B1(71)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B2(72)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B3(73)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B4(74)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B5(65)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B6(66)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B7(67)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+         figure();erpimage( mean(EEG.data([1], :),1), eeg_getepochevent( EEG, {'B8(68)'},[],'type'), linspace(EEG.xmin*1000, EEG.xmax*1000, EEG.pnts), 'pz', 10, 1 ,'yerplabel','\muV','erp','on','cbar','on','topo', { [1] EEG.chanlocs EEG.chaninfo } );
+
 %% equalize number of trials
     
-        % for n = 5 (assuming no artifact detection will be done)
-        numelements = 5;
-        % get the randomly-selected indices
-        if numel(find(idx1)) >= 5
-            clear indices
-            indices = randperm(length(idx1));
-            indices = indices(1:numelements);
-            % choose the subset of a you want
-            idx1_5 = idx1(indices);
-        else
-            idx1_5=idx1;
-        end
-        
-        if numel(find(idx2)) >= 5
-        clear indices
-        indices = randperm(length(idx2));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx2_5 = idx2(indices);
-        else
-            idx2_5=idx2;
-        end
-        
-        if numel(find(idx3)) >= 5
-        clear indices
-        indices = randperm(length(idx3));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx3_5 = idx3(indices);
-        else
-            idx3_5=idx3;
-        end
-        
-        if numel(find(idx4)) >= 5
-        clear indices
-        indices = randperm(length(idx4));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx4_5 = idx4(indices);
-        else
-            idx4_5=idx4;
-        end
-        
-        clear indices
-        indices = randperm(length(idx5));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx5_5 = idx5(indices);
-        
-        clear indices
-        indices = randperm(length(idx6));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx6_5 = idx6(indices);
-        
-        clear indices
-        indices = randperm(length(idx7));
-        indices = indices(1:numelements);
-        % choose the subset of a you want
-        idx7_5 = idx7(indices);
-        
-        if strcmp(sub,'S015')==0;
-            clear indices
-            indices = randperm(length(idx8));
-            indices = indices(1:numelements);
-            % choose the subset of a you want
-            idx8_5 = idx8(indices);
-        end
-    rand5check = [0 0 0 0 0 0 0 0];
-        if strcmp(sub,'S015')==0;
-            rand5check_goal = [5 5 5 5 5 5 5 5];
-        else
-            rand5check_goal = [5 5 5 5 5 5 5 0];
-        end
-    maxIter=100;
-
-    for iter=1:maxIter
-        icarej_eq = zeros(length(icarej_all(1,:)),1);
-        for ii = 1:length(idx1_5)
-            icarej_eq(idx1_5(ii)) = 1; % non-stroop non-target (blue star)
-        end
-        for ii = 1:length(idx2_5)
-            icarej_eq(idx2_5(ii)) = 2; % non-stroop non-target (blue star)
-        end
-        for ii = 1:length(idx3_5)
-            icarej_eq(idx3_5(ii)) = 3; % non-stroop non-target (blue star)
-        end
-        for ii = 1:length(idx4_5)
-            icarej_eq(idx4_5(ii)) = 4; % non-stroop non-target (blue star)
-        end
-        for ii = 1:length(idx5_5)
-            icarej_eq(idx5_5(ii)) = 5; % non-stroop non-target (blue star)
-        end
-        for ii = 1:length(idx6_5)
-            icarej_eq(idx6_5(ii)) = 6; % stroop non-target (cyan star)
-        end
-        for ii = 1:length(idx7_5)
-            icarej_eq(idx7_5(ii)) = 7; % non-stroop target (magenta circle)
-        end
-        if strcmp(sub,'S015')==0 
-            for ii = 1:length(idx8_5)
-                icarej_eq(idx8_5(ii)) = 8; % non-stroop target (black star)
-            end
-        end
-        rand5check = [numel(find(icarej_eq==1)) numel(find(icarej_eq==2)) numel(find(icarej_eq==3)) numel(find(icarej_eq==4)) numel(find(icarej_eq==5)) numel(find(icarej_eq==6)) numel(find(icarej_eq==7)) numel(find(icarej_eq==8))];
-        
-        if rand5check==rand5check_goal
-            break
-        elseif iter == maxIter
-            warning('Max Iterations reached')
-            break
-        end
-    end
-    disp(rand5check)
-  
-    %%
-    icarej_eq(:,2)=zeros(numel(icarej_eq(:,1)),1);
-    for ii=1:numel(icarej_eq(:,1))
-        if icarej_eq(ii,1)==0
-            icarej_eq(ii,2)=1;
-        end
-    end
-    %%
-     EEG = pop_rejepoch( EEG, [icarej_eq(:,2)] ,0);
+%         % for n = 5 (assuming no artifact detection will be done)
+%         numelements = 5;
+%         % get the randomly-selected indices
+%         if numel(find(idx1)) >= 5
+%             clear indices
+%             indices = randperm(length(idx1));
+%             indices = indices(1:numelements);
+%             % choose the subset of a you want
+%             idx1_5 = idx1(indices);
+%         else
+%             idx1_5=idx1;
+%         end
+%         
+%         if numel(find(idx2)) >= 5
+%         clear indices
+%         indices = randperm(length(idx2));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx2_5 = idx2(indices);
+%         else
+%             idx2_5=idx2;
+%         end
+%         
+%         if numel(find(idx3)) >= 5
+%         clear indices
+%         indices = randperm(length(idx3));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx3_5 = idx3(indices);
+%         else
+%             idx3_5=idx3;
+%         end
+%         
+%         if numel(find(idx4)) >= 5
+%         clear indices
+%         indices = randperm(length(idx4));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx4_5 = idx4(indices);
+%         else
+%             idx4_5=idx4;
+%         end
+%         
+%         clear indices
+%         indices = randperm(length(idx5));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx5_5 = idx5(indices);
+%         
+%         clear indices
+%         indices = randperm(length(idx6));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx6_5 = idx6(indices);
+%         
+%         clear indices
+%         indices = randperm(length(idx7));
+%         indices = indices(1:numelements);
+%         % choose the subset of a you want
+%         idx7_5 = idx7(indices);
+%         
+%         if strcmp(sub,'S015')==0;
+%             clear indices
+%             indices = randperm(length(idx8));
+%             indices = indices(1:numelements);
+%             % choose the subset of a you want
+%             idx8_5 = idx8(indices);
+%         end
+%     rand5check = [0 0 0 0 0 0 0 0];
+%         if strcmp(sub,'S015')==0;
+%             rand5check_goal = [5 5 5 5 5 5 5 5];
+%         else
+%             rand5check_goal = [5 5 5 5 5 5 5 0];
+%         end
+%     maxIter=100;
+% 
+%     for iter=1:maxIter
+%         icarej_eq = zeros(length(icarej_all(1,:)),1);
+%         for ii = 1:length(idx1_5)
+%             icarej_eq(idx1_5(ii)) = 1; % non-stroop non-target (blue star)
+%         end
+%         for ii = 1:length(idx2_5)
+%             icarej_eq(idx2_5(ii)) = 2; % non-stroop non-target (blue star)
+%         end
+%         for ii = 1:length(idx3_5)
+%             icarej_eq(idx3_5(ii)) = 3; % non-stroop non-target (blue star)
+%         end
+%         for ii = 1:length(idx4_5)
+%             icarej_eq(idx4_5(ii)) = 4; % non-stroop non-target (blue star)
+%         end
+%         for ii = 1:length(idx5_5)
+%             icarej_eq(idx5_5(ii)) = 5; % non-stroop non-target (blue star)
+%         end
+%         for ii = 1:length(idx6_5)
+%             icarej_eq(idx6_5(ii)) = 6; % stroop non-target (cyan star)
+%         end
+%         for ii = 1:length(idx7_5)
+%             icarej_eq(idx7_5(ii)) = 7; % non-stroop target (magenta circle)
+%         end
+%         if strcmp(sub,'S015')==0 
+%             for ii = 1:length(idx8_5)
+%                 icarej_eq(idx8_5(ii)) = 8; % non-stroop target (black star)
+%             end
+%         end
+%         rand5check = [numel(find(icarej_eq==1)) numel(find(icarej_eq==2)) numel(find(icarej_eq==3)) numel(find(icarej_eq==4)) numel(find(icarej_eq==5)) numel(find(icarej_eq==6)) numel(find(icarej_eq==7)) numel(find(icarej_eq==8))];
+%         
+%         if rand5check==rand5check_goal
+%             break
+%         elseif iter == maxIter
+%             warning('Max Iterations reached')
+%             break
+%         end
+%     end
+%     disp(rand5check)
+%   
+%     %%
+%     icarej_eq(:,2)=zeros(numel(icarej_eq(:,1)),1);
+%     for ii=1:numel(icarej_eq(:,1))
+%         if icarej_eq(ii,1)==0
+%             icarej_eq(ii,2)=1;
+%         end
+%     end
+%     %%
+%      EEG = pop_rejepoch( EEG, [icarej_eq(:,2)] ,0);
         %% save & epoch bins
         [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, startSet+5,'savenew',setRejected,'gui','off');
         ERP = pop_averager( ALLEEG , 'Criterion', trialsTxt,...
@@ -286,16 +295,18 @@ for i = 1:numel(subs)
                 [ -200.0 796.0   -200:200:600 ], 'YDir', 'normal' );
             
         end
-        if strcmp(sub,'S015')==0;
-            pop_export2text( ERP, erpText,...
-                [ 1 2 3 4 5 6 7 8], 'electrodes', 'on', 'precision',  10, 'time', 'on', 'timeunit',  0.001 );
-        else
-            pop_export2text( ERP, erpText,...
-                [ 1 2 3 4 5 6 7], 'electrodes', 'on', 'precision',  10, 'time', 'on', 'timeunit',  0.001 );    
+        if savefiles == 1
+            if strcmp(sub,'S015')==0;
+                pop_export2text( ERP, erpText,...
+                    [ 1 2 3 4 5 6 7 8], 'electrodes', 'on', 'precision',  10, 'time', 'on', 'timeunit',  0.001 );
+            else
+                pop_export2text( ERP, erpText,...
+                    [ 1 2 3 4 5 6 7], 'electrodes', 'on', 'precision',  10, 'time', 'on', 'timeunit',  0.001 );
+            end
+            fnm = sprintf('erp_%s.fig',setName);
+            cd(filePath)
+            savefig(fnm)
         end
-        fnm = sprintf('erp_%s.fig',setName);
-        cd(filePath)
-%         savefig(fnm)
         
         % save stuff
         naccepted = ERP.ntrials;
@@ -303,7 +314,10 @@ for i = 1:numel(subs)
         info = ERP.history;
         fnm = sprintf('info_part2_%s.mat',setName);
         cd(filePath)
-%         save(fnm,'naccepted','ntotal','info','icarej_eq','-mat');
+        if savefiles == 1
+%             save(fnm,'naccepted','ntotal','info','icarej_eq','-mat');
+            save(fnm,'naccepted','ntotal','info','-mat');
+        end
     end
 end
 % ERP_S016_v5 = pop_loaderp('filename', 'erpset_S016_v5_stroopStimuli_filt_a_b_2_allTrials_eq10_ICA_Num.erp',...
