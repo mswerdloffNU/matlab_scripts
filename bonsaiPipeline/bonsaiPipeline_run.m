@@ -7,7 +7,7 @@ all_possible_subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA',...
     'S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 
 % subs = all_possible_subs; % run all subs
-subs = {'S024_SA'}; % stim conversion
+subs = {'S026_SA_0002'}; % stim conversion
 % subs = {'S026_SA_0002'}; % pt 1  
 loc_user = 'C:\Users\mswerdloff\';
 loc_main = [loc_user 'Documents\GitHub\matlab_scripts\'];
@@ -23,15 +23,15 @@ loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
 loc_erp = [loc_save 'AR\'];
 
 %% which parts to run
-needStimConvert = 0; % change to 1 to make stim
+needStimConvert = 1; % change to 1 to make stim
 part1 = 0;
 part2 = 0;
-part3 = 1;
+part3 = 0;
 %% Save results?
 savefiles = 1;
 
 %% Do you want to check tones and words?
-checktones = 0;
+checktones = 1;
 checkwords = 1;
 
 %% Are you troubleshooting?

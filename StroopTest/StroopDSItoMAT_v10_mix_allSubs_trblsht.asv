@@ -520,7 +520,6 @@ for i = 1:numel(subs)
         
     end
     
-    %% fix errors in stim
     goofs = find(word_verify(:,2) == 2); % 2 means there was a goof
     alters = idxword_flagged(find(word_flagged(:,2)==2));
     idxWordsOn_alt = idxWordsOn;
@@ -528,7 +527,7 @@ for i = 1:numel(subs)
     
     if isempty(goofs) == 0
         goofs
-        error('ya darn goofed. go back')
+        sprintf('ya darn goofed')
         pause
     elseif isempty(goofs) == 1 && isempty(alters == 2) == 0
         sprintf('changing alters now')
@@ -573,28 +572,23 @@ for i = 1:numel(subs)
     ylabel('word interval')
     xlabel('index')
     
-     for ii = 1:numel(alters)
+     for ii = 1:numel(idxword_flagged)
         figure
         plot(word)
         ylabel('word')
         hold on
-        plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
-        plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-        plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
-        plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
-        plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
-        plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
-        plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'ko')
-        plot(idxWordsOff_alt,ones(1,numel(idxWordsOff_alt)),'ko')
         
-        plot(idxWordsOff_alt(alters(ii)),1,'ko')
-        plot(idxWordsOn_alt(alters(ii)),1,'ko')
+        if word_flagged(ii,2) == 1 % good
+            plot(idxWordsOff(idxword_flagged(ii)+1),1,'g+')
+            plot(idxWordsOn(idxword_flagged(ii)+1),1,'go')
+        elseif word_flagged(ii,2) == 2 % bad
+            plot(idxWordsOff(idxword_flagged(ii)+1),1,'r+')
+            plot(idxWordsOn(idxword_flagged(ii)+1),1,'ro')
+        end
         
-        plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'.')
-        xlim([idxWordsOn_alt(alters(ii))-2500 idxWordsOff(alters(ii))+2500])
+        plot(idxWordsOn,ones(1,numel(idxWordsOn)),'.')
+        xlim([idxWordsOn(idxword_flagged(ii)+1)-2500 idxWordsOff(idxword_flagged(ii)+1)+2500])
         ylim([.90 1.05])
-     end
-     
     %% fix errors in stimuli
     if strfind(sub,'S027_SA')==1
         idxWordsOn(1) = 0;
