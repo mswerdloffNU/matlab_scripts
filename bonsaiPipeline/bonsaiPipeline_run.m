@@ -7,7 +7,7 @@ all_possible_subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA',...
     'S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 
 % subs = all_possible_subs; % run all subs
-subs = {'S026_SA_0002'}; % stim conversion
+subs = {'S025_SA_0001'}; % stim conversion
 % subs = {'S026_SA_0002'}; % pt 1  
 loc_user = 'C:\Users\mswerdloff\';
 loc_main = [loc_user 'Documents\GitHub\matlab_scripts\'];
@@ -31,15 +31,17 @@ part3 = 0;
 savefiles = 1;
 
 %% Do you want to check tones and words?
-checktones = 1;
+checktones = 0;
 checkwords = 1;
 
 %% Are you troubleshooting?
-if contains(subs,'S024') == 1
-    troubleshooting = 1; % 1 if troubleshooting
-else
-    troubleshooting = 0; % 0 if not troubleshooting
-end
+troubleshooting = 1; % 1 if troubleshooting
+
+% if contains(subs,'S025') == 1
+%     troubleshooting = 1; % 1 if troubleshooting
+% else
+%     troubleshooting = 0; % 0 if not troubleshooting
+% end
 
 %% Voice to stim
 % gotta make this one!
@@ -47,6 +49,7 @@ end
 %% Stim converstion
 if needStimConvert == 1
     cd(loc_scripts)
+    addpath(loc_main)
     if troubleshooting == 0
         StroopDSItoMAT_v10_mix_allSubs % regular file
     elseif troubleshooting == 1

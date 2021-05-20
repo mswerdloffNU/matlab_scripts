@@ -347,7 +347,7 @@ for i = 1:numel(subs)
     
     word_flag = zeros(numel(word_int),1);
     for ii = 1:numel(word_int)
-        if word_int(ii) < 320
+        if word_int(ii) < 320 || word_int(ii) > 1000
             word_flag(ii) = 1;
         else 
             word_flag(ii) = 2;
@@ -426,7 +426,7 @@ for i = 1:numel(subs)
     
     if checkwords == 1
         
-        if numel(idxword_flag) < 10
+%         if numel(idxword_flag) < 10
             word_flagged = zeros(length(idxword_flag),2);
             for jj = 1:numel(idxword_flag)
                 figure
@@ -444,11 +444,11 @@ for i = 1:numel(subs)
                 
                 for ii = 1:numel(idxword_flag)
                     numel(idxword_flag)
-                    plot(idxWordsOff(idxword_flag(ii)),1,'r+')
-                    plot(idxWordsOn(idxword_flag(ii)),1,'ro')
+                    plot(idxWordsOff(idxword_flag(ii)+1),1,'r+')
+                    plot(idxWordsOn(idxword_flag(ii)+1),1,'ro')
                 end
                 
-                xlim([idxWordsOff(idxword_flag(jj))-1500 idxWordsOff(idxword_flag(jj))+1500])
+                xlim([idxWordsOff(idxword_flag(jj)+1)-1500 idxWordsOff(idxword_flag(jj)+1)+1500])
                 ylim([.90 1.15])
 
                 pause
@@ -461,7 +461,7 @@ for i = 1:numel(subs)
                 word_flagged(jj,:) = [idxword_flag(jj) str2num(answer{1})]
             end
             
-        else
+%         else
             figure
             plot(word)
             ylabel('word')
@@ -478,122 +478,15 @@ for i = 1:numel(subs)
             if isempty(idxword_flag) == 0
                 for ii = 1:numel(idxword_flag)
                     numel(idxword_flag)
-                    plot(idxWordsOff(idxword_flag(ii)),1,'r+')
-                    plot(idxWordsOn(idxword_flag(ii)),1,'ro')
+                    plot(idxWordsOff(idxword_flag(ii)+1),1,'r+')
+                    plot(idxWordsOn(idxword_flag(ii)+1),1,'ro')
                 end
             end
-        end
+%         end
         
     end
     
-    %% plot again to visually verify flags are good
-    
-    idxword_flagged = word_flagged(:,1);
-    %     idxword_flagged = word_flagged(find(word_flagged(:,2) == 2),1);
-    word_verify = zeros(length(idxword_flagged),2);
-    
-    for ii = 1:numel(idxword_flagged)
-        figure
-        plot(word)
-        ylabel('word')
-        hold on
-        
-        if word_flagged(ii,2) == 1 % good
-            plot(idxWordsOff(idxword_flagged(ii)+1),1,'g+')
-            plot(idxWordsOn(idxword_flagged(ii)+1),1,'go')
-        elseif word_flagged(ii,2) == 2 % bad
-            plot(idxWordsOff(idxword_flagged(ii)+1),1,'r+')
-            plot(idxWordsOn(idxword_flagged(ii)+1),1,'ro')
-        end
-        
-        plot(idxWordsOn,ones(1,numel(idxWordsOn)),'.')
-        xlim([idxWordsOn(idxword_flagged(ii)+1)-2500 idxWordsOff(idxword_flagged(ii)+1)+2500])
-        ylim([.90 1.05])
-        pause
-        
-        prompt = {'Keep 1 if correct, 2 if incorrect:'};
-        dlgtitle = 'Input';
-        dims = [1 65];
-        definput = {'1'};
-        answer = inputdlg(prompt,dlgtitle,dims,definput);
-        word_verify(ii,:) = [idxword_flagged(ii) str2num(answer{1})]
-        
-    end
-    
-    %% fix errors in stim
-    goofs = find(word_verify(:,2) == 2); % 2 means there was a goof
-    alters = idxword_flagged(find(word_flagged(:,2)==2));
-    idxWordsOn_alt = idxWordsOn;
-    idxWordsOff_alt = idxWordsOff;
-    
-    if isempty(goofs) == 0
-        goofs
-        error('ya darn goofed. go back')
-        pause
-    elseif isempty(goofs) == 1 && isempty(alters == 2) == 0
-        sprintf('changing alters now')
-        alters
-        for ii = 1:numel(alters)
-            idxWordsOn_alt(alters(ii)+1) = [];
-            idxWordsOff_alt(alters(ii)+1) = [];
-        end
-    end
-
-    %%
-     word_int_alt = [];
-    for ii = 1:numel(idxWordsOn_alt)-1
-        word_int_alt(ii) = idxWordsOn_alt(ii+1) - idxWordsOff_alt(ii);
-    end
-    
-     figure()
-    plot(word_int_alt,'.')
-    ylim([0,4000])
-    ylabel('word interval')
-    
-    word_flag_alt = zeros(numel(word_int_alt),1);
-    for ii = 1:numel(word_int_alt)
-        if word_int_alt(ii) < 320
-            word_flag_alt(ii) = 1;
-        else 
-            word_flag_alt(ii) = 2;
-        end
-    end
-    [idxword_flag_alt,~] = find(word_flag_alt == 1)
-    
-    word_int_val_alt = [];
-    for ii = 1:numel(idxword_flag_alt)
-        word_int_val_alt(ii) = word_int(idxword_flag_alt(ii));
-    end
-    
-    figure
-    plot(word_int_alt,'k.')
-    hold on
-    plot(idxword_flag_alt,word_int_val_alt,'r.')
-    ylim([0,4000])
-    ylabel('word interval')
-    xlabel('index')
-    
-     for ii = 1:numel(alters)
-        figure
-        plot(word)
-        ylabel('word')
-        hold on
-        plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
-        plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-        plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
-        plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
-        plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
-        plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
-        plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'ko')
-        plot(idxWordsOff_alt,ones(1,numel(idxWordsOff_alt)),'ko')
-        
-        plot(idxWordsOff_alt(alters(ii)),1,'ko')
-        plot(idxWordsOn_alt(alters(ii)),1,'ko')
-        
-        plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'.')
-        xlim([idxWordsOn_alt(alters(ii))-2500 idxWordsOff(alters(ii))+2500])
-        ylim([.90 1.05])
-     end
+    verifyAndChangeWords
      
     %% fix errors in stimuli
     if strfind(sub,'S027_SA')==1

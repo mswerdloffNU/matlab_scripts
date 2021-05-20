@@ -20,18 +20,18 @@ loc_stroopData = [loc_data 'StroopTestResults\study1\renamed\'];
 loc_eeglab = [loc_user 'eeglab\eeglab2021_0'];
 loc_binlist = [loc_save 'binlist10.txt'];
 loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
-loc_erp = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\Pilot2\AR_eq';
+loc_erp = [loc_save 'AR\'];
 
 %% which parts to run
-needStimConvert = 0; % change to 1 to make stim
+needStimConvert = 1; % change to 1 to make stim
 part1 = 0;
 part2 = 0;
-part3 = 1;
+part3 = 0;
 %% Save results?
 savefiles = 1;
 
 %% Do you want to check tones and words?
-checktones = 0;
+checktones = 1;
 checkwords = 1;
 
 %% Are you troubleshooting?
@@ -47,6 +47,7 @@ end
 %% Stim converstion
 if needStimConvert == 1
     cd(loc_scripts)
+    addpath(loc_main)
     if troubleshooting == 0
         StroopDSItoMAT_v10_mix_allSubs % regular file
     elseif troubleshooting == 1
