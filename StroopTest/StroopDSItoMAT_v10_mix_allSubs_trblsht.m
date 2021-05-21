@@ -256,6 +256,11 @@ for i = 1:numel(subs)
         word_int(ii) = idxWordsOn(ii+1) - idxWordsOff(ii);
     end
     
+    word_int_on = [];
+    for ii = 1:numel(idxWordsOn)-1
+        word_int_on(ii) = idxWordsOff(ii) - idxWordsOn(ii);
+    end
+    
     tone_int = [];
     for ii = 1:numel(idxTonesOn)-1
         tone_int(ii) = idxTonesOn(ii+1) - idxTonesOff(ii);
@@ -343,7 +348,12 @@ for i = 1:numel(subs)
     figure()
     plot(word_int,'.')
     ylim([0,4000])
-    ylabel('word interval')
+    ylabel('word interval')    
+    
+    figure()
+    plot(word_int_on,'.')
+    ylim([0,4000])
+    ylabel('word on interval')
     
     word_flag = zeros(numel(word_int),1);
     for ii = 1:numel(word_int)
@@ -360,10 +370,33 @@ for i = 1:numel(subs)
         word_int_val(ii) = word_int(idxword_flag(ii));
     end
     
+    word_on_flag = zeros(numel(word_int_on),1);
+    for ii = 1:numel(word_int_on)
+        if word_int_on(ii) < 100 || word_int_on(ii) > 200
+            word_on_flag(ii) = 1;
+        else
+            word_on_flag(ii) = 2;
+        end
+    end
+    [idxword_on_flag,~] = find(word_on_flag == 1)
+    
+    word_on_int_val = [];
+    for ii = 1:numel(idxword_on_flag)
+        word_on_int_val(ii) = word_int_on(idxword_on_flag(ii));
+    end
+    
     figure
     plot(word_int,'k.')
     hold on
     plot(idxword_flag,word_int_val,'r.')
+    ylim([0,4000])
+    ylabel('word interval')
+    xlabel('index')
+    
+    figure
+    plot(word_int_on,'k.')
+    hold on
+    plot(idxword_on_flag,word_on_int_val,'r.')
     ylim([0,4000])
     ylabel('word interval')
     xlabel('index')
@@ -425,68 +458,9 @@ for i = 1:numel(subs)
     end
     
     if checkwords == 1
-        
-%         if numel(idxword_flag) < 10
-            word_flagged = zeros(length(idxword_flag),2);
-            for jj = 1:numel(idxword_flag)
-                figure
-                plot(word)
-                ylabel('word')
-                hold on
-                plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
-                plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-                plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
-                plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
-                plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
-                plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
-                plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
-                plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
-                
-                for ii = 1:numel(idxword_flag)
-                    numel(idxword_flag)
-                    plot(idxWordsOff(idxword_flag(ii)+1),1,'r+')
-                    plot(idxWordsOn(idxword_flag(ii)+1),1,'ro')
-                end
-                
-                xlim([idxWordsOff(idxword_flag(jj)+1)-1500 idxWordsOff(idxword_flag(jj)+1)+1500])
-                ylim([.90 1.15])
-
-                pause
-                
-                prompt = {'Enter 1 if good, 2 if bad:'};
-                dlgtitle = 'Input';
-                dims = [1 65];
-                definput = {'0'};
-                answer = inputdlg(prompt,dlgtitle,dims,definput);
-                word_flagged(jj,:) = [idxword_flag(jj) str2num(answer{1})]
-            end
-            
-%         else
-            figure
-            plot(word)
-            ylabel('word')
-            hold on
-            plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
-            plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-            plot(idxTonesOn_only_long,ones(1,numel(idxTonesOn_only_long)),'ko')
-            plot(idxTonesOff_only_long,ones(1,numel(idxTonesOff_only_long)),'k+')
-            plot(idxTonesOn_comb_nz,ones(1,numel(idxTonesOn_comb_nz)),'go')
-            plot(idxTonesOff_comb_nz,ones(1,numel(idxTonesOff_comb_nz)),'g+')
-            plot(idxWordsOn,ones(1,numel(idxWordsOn)),'ko')
-            plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
-            
-            if isempty(idxword_flag) == 0
-                for ii = 1:numel(idxword_flag)
-                    numel(idxword_flag)
-                    plot(idxWordsOff(idxword_flag(ii)+1),1,'r+')
-                    plot(idxWordsOn(idxword_flag(ii)+1),1,'ro')
-                end
-            end
-%         end
-        
+        verifyAndChangeWords        
     end
     
-    verifyAndChangeWords
      
     %% fix errors in stimuli
     if strfind(sub,'S027_SA')==1

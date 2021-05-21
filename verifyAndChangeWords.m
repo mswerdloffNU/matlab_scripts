@@ -1,4 +1,4 @@
-function [idxWordsOn_alt, idxWordsOff_alt, alters] = verifyAndChangeWords(idxword_flag,idxword_on_flag)
+% function [idxWordsOn_alt, idxWordsOff_alt, alters] = verifyAndChangeWords(idxword_flag,idxword_on_flag)
 
 %% decide if flagged words are actually good or bad
 input_flags = {idxword_flag idxword_on_flag};
@@ -101,13 +101,12 @@ for mm = 1:length(input_flags)
 end 
 
 %% fix errors in stim
-for mm = 1:numel(input_flag)
-    alters_cell = [alters_cells{:}];
-    alters = cell2mat(alters_cell(:));
-    
-    goofs_cell = [goofs_cells{:}];
-    goofs = cell2mat(goofs_cell(:));
-end
+alters_cell = [alters_cells{:}];
+alters = cell2mat(alters_cell(:));
+
+goofs_cell = [goofs_cells{:}];
+goofs = cell2mat(goofs_cell(:));
+
 idxWordsOn_alt = idxWordsOn;
 idxWordsOff_alt = idxWordsOff;
 
@@ -190,4 +189,4 @@ for ii = 1:numel(alters)
     pause
 end
 
-end
+% end
