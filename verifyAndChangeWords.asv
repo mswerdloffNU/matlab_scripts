@@ -9,8 +9,8 @@ for mm = 1:length(input_flags)
     numel(input_flag)
     word_flagged = zeros(length(input_flag),2);
     
-    for jj = 1:numel(input_flag)
-        figure
+    figure
+    for jj = 1:20%numel(input_flag)
         plot(word)
         ylabel('word')
         hold on
@@ -24,11 +24,19 @@ for mm = 1:length(input_flags)
         plot(idxWordsOff,ones(1,numel(idxWordsOff)),'ko')
         
         for ii = 1:numel(input_flag)
-            plot(idxWordsOff(input_flag(ii)+1),1,'r+')
-            plot(idxWordsOn(input_flag(ii)+1),1,'ro')
+            if mm == 1
+                plot(idxWordsOff(input_flag(ii)+1),1,'r+')
+                plot(idxWordsOn(input_flag(ii)+1),1,'ro')
+            else
+                plot(idxWordsOff(input_flag(ii)),1,'r+')
+                plot(idxWordsOn(input_flag(ii)),1,'ro')
+            end
         end
-        
-        xlim([idxWordsOff(input_flag(jj)+1)-1500 idxWordsOff(input_flag(jj)+1)+1500])
+        if mm == 1
+            xlim([idxWordsOff(input_flag(jj)+1)-1500 idxWordsOff(input_flag(jj)+1)+1500])
+        else
+            xlim([idxWordsOff(input_flag(jj))-1500 idxWordsOff(input_flag(jj))+1500])
+        end
         ylim([.90 1.15])
         [jj numel(input_flag)]
         
@@ -39,7 +47,11 @@ for mm = 1:length(input_flags)
         dims = [1 65];
         definput = {'0'};
         answer = inputdlg(prompt,dlgtitle,dims,definput);
-        word_flagged(jj,:) = [input_flag(jj) str2num(answer{1})]
+        if mm == 1
+            word_flagged(jj,:) = [input_flag(jj) str2num(answer{1})]
+        else
+            word_flagged(jj,:) = [input_flag(jj)-1 str2num(answer{1})]
+        end
     end
     
     figure
@@ -58,35 +70,65 @@ for mm = 1:length(input_flags)
     if isempty(input_flag) == 0
         for ii = 1:numel(input_flag)
             numel(input_flag)
-            plot(idxWordsOff(input_flag(ii)+1),1,'r+')
-            plot(idxWordsOn(input_flag(ii)+1),1,'ro')
+            if mm == 1
+                plot(idxWordsOff(input_flag(ii)+1),1,'r+')
+                plot(idxWordsOn(input_flag(ii)+1),1,'ro')
+            else
+                plot(idxWordsOff(input_flag(ii)),1,'r+')
+                plot(idxWordsOn(input_flag(ii)),1,'ro')
+            end
         end
     end
     
-    
+    sprintf('make any necesary changes')
+    pause
     %% plot again to visually verify flag designations are correct
     
     idxword_flagged = word_flagged(:,1);
     %     idxword_flagged = word_flagged(find(word_flagged(:,2) == 2),1);
     word_verify = zeros(length(idxword_flagged),2);
     
+    figure
     for ii = 1:numel(idxword_flagged)
-        figure
         plot(word)
         ylabel('word')
         hold on
         
         if word_flagged(ii,2) == 1 % good
-            plot(idxWordsOff(idxword_flagged(ii)+1),1,'g+')
-            plot(idxWordsOn(idxword_flagged(ii)+1),1,'go')
+            if mm == 1
+                plot(idxWordsOff(idxword_flagged(ii)+1),1,'g+')
+                plot(idxWordsOn(idxword_flagged(ii)+1),1,'go')
+            else
+                plot(idxWordsOff(idxword_flagged(ii)),1,'g+')
+                plot(idxWordsOn(idxword_flagged(ii)),1,'go')
+            end
         elseif word_flagged(ii,2) == 2 % bad
-            plot(idxWordsOff(idxword_flagged(ii)+1),1,'r+')
-            plot(idxWordsOn(idxword_flagged(ii)+1),1,'ro')
+            if mm == 1
+                plot(idxWordsOff(idxword_flagged(ii)+1),1,'r+')
+                plot(idxWordsOn(idxword_flagged(ii)+1),1,'ro')
+            else
+                plot(idxWordsOff(idxword_flagged(ii)),1,'r+')
+                plot(idxWordsOn(idxword_flagged(ii)),1,'ro')
+            end
+        else
+            if mm = 1
+                [idxWordsOn(idxword_flagged(ii)+1)  idxWordsOff(idxword_flagged(ii)+1)]
+            else
+                [idxWordsOn(idxword_flagged(ii))  idxWordsOff(idxword_flagged(ii))]
+            end
+            sprintf('warning: unspecified label. Now exiting')
+            ii
+            pause
+            return
         end
         
         plot(idxWordsOn,ones(1,numel(idxWordsOn)),'.')
-        xlim([idxWordsOn(idxword_flagged(ii)+1)-2500 idxWordsOff(idxword_flagged(ii)+1)+2500])
-        ylim([.90 1.05])
+        if mm = 1
+            xlim([idxWordsOn(idxword_flagged(ii)+1)-2500 idxWordsOff(idxword_flagged(ii)+1)+2500])
+        else
+            xlim([idxWordsOn(idxword_flagged(ii))-2500 idxWordsOff(idxword_flagged(ii))+2500])
+        end
+        ylim([.90 1.15])
         pause
         
         prompt = {'Keep 1 if correct, 2 if incorrect:'};
@@ -94,7 +136,11 @@ for mm = 1:length(input_flags)
         dims = [1 65];
         definput = {'1'};
         answer = inputdlg(prompt,dlgtitle,dims,definput);
-        word_verify(ii,:) = [idxword_flagged(ii) str2num(answer{1})]        
+        if mm == 1
+            word_verify(ii,:) = [idxword_flagged(ii) str2num(answer{1})]
+        else
+            word_verify(ii,:) = [idxword_flagged(ii)-1 str2num(answer{1})]
+        end
     end
     alters_cells{mm} = num2cell(idxword_flagged(find(word_flagged(:,2)==2)),[1 2]);
     goofs_cells{mm} = find(word_verify(:,2) == 2); % 2 means there was a goof
@@ -116,10 +162,15 @@ if isempty(goofs) == 0
     pause
 elseif isempty(goofs) == 1 && isempty(alters == 2) == 0
     sprintf('changing alters now')
-    alters
-    for ii = 1:numel(alters)
-        idxWordsOn_alt(alters(ii)+1) = [];
-        idxWordsOff_alt(alters(ii)+1) = [];
+    alters_unique = unique(alters)
+    for ii = 1:numel(alters_unique)
+        if mm == 1
+            idxWordsOn_alt(alters_unique(ii)+1) = [];
+            idxWordsOff_alt(alters_unique(ii)+1) = [];
+        else
+            idxWordsOn_alt(alters_unique(ii)) = [];
+            idxWordsOff_alt(alters_unique(ii)) = [];
+        end
     end
 end
 
@@ -181,10 +232,13 @@ plot(idxWordsOff_alt,ones(1,numel(idxWordsOff_alt)),'ko')
 %     plot(idxWordsOff_alt(alters(ii)),1,'ko')
 %     plot(idxWordsOn_alt(alters(ii)),1,'ko')
 
-plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'k.')
-for ii = 1:numel(alters)
-    
-    xlim([idxWordsOn_alt(alters(ii))-2500 idxWordsOff(alters(ii))+2500])
+plot(idxWordsOn_alt,ones(1,numel(idxWordsOn_alt)),'g.')
+for ii = 1:numel(alters_unique)
+    if mm == 1
+        xlim([idxWordsOn_alt(alters_unique(ii))-2500 idxWordsOff_alt(alters_unique(ii))+2500])
+    else
+        xlim([idxWordsOn_alt(alters_unique(ii))-2500 idxWordsOff_alt(alters_unique(ii))+2500])
+    end
     ylim([.90 1.05])
     pause
 end

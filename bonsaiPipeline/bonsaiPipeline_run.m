@@ -1,5 +1,5 @@
 clearvars
-
+close all
 %% Global variables
 all_possible_subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA',...
     'S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002',...
