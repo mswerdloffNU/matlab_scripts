@@ -235,7 +235,7 @@ for i = 1:numel(subs)
         end
 %     end
 
-for ii = 1:numel(find(unique(bothStimidx)))
+for ii = 1:numel(unique(bothStimidx))
 [both1(ii),both2(ii)]=find(bothStimidx);
 figure
 plot(word)
@@ -243,7 +243,7 @@ ylabel('word')
 hold on
 plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
 plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-xlim([-500+idxStimOn(both2(ii)) 500+idxStimOn(both2(ii))])
+xlim([-500+idxStimOn(blah2(ii)) 500+idxStimOn(blah2(ii))])
 end
 
 unique(both2)
