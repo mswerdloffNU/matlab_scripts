@@ -114,23 +114,28 @@ for i = 1:numel(subs)
     bb = 1;
     for ii = 1:numel(expList)
         if expList(ii) == 1
-            fakeTones(aa:aa+(numEasy+numHard-1)) = 1; % Non-target tone-only
-            fakeTones(aa+5) = 2; % Target Tone-only
-            aa = aa+10;
+            fakeTones(aa:aa+((numEasy+numHard)-1)) = 1; % Non-target tone-only
+            fakeTones(aa+(numEasy)) = 2; % Target Tone-only
+            aa = aa+((numEasy+numHard));
         elseif expList(ii) == 0
-            fakeTones(aa:aa+(numEasy+numHard-1)) = 3; % Non-target word
+            fakeTones(aa:aa+(2*(numEasy+numHard)-1)) = 3; % Non-target word
             if congruences(bb) == 0
-                fakeTones(aa+numHard) = 4; % Target word (Hard)
+                fakeTones(aa+(2*numHard)) = 4; % Target word (Hard)
             elseif congruences(bb) == 1
-                fakeTones(aa+numHard) = 5; % Non-Target Target word (Easy)
+                fakeTones(aa+(2*numHard)) = 5; % Non-Target Target word (Easy)
             end
-            aa = aa+10;
+            aa = aa+(2*(numEasy+numHard));
             bb = bb+1;
         end
     end
     [numel(find(fakeTones==1)) numel(find(fakeTones==2)) numel(find(fakeTones==3)) ...
         numel(find(fakeTones==4)) numel(find(fakeTones==5))]
     
+    figure()
+    hold on
+    plot(idxStimOn,[1 1 1 1 1 1 fakeTones],'b-') % Target Tone-only
+
+    plot(1:length(fakeTones),fakeTones,'b*')
     %%
     fakeTones_tto = zeros(1,numel(fakeTones));
     fakeTones_easy = zeros(1,numel(fakeTones));
@@ -158,9 +163,9 @@ for i = 1:numel(subs)
     figure()
     hold on
 %     plot(1:1800,fakeTones,'b*')
-    plot(1:1800,fakeTones_tto,'b*') % Target Tone-only
-    plot(1:1800,fakeTones_easy,'m*') % Target word (Hard)
-    plot(1:1800,fakeTones_hard,'c*') % Non-Target Target word (Easy)
+    plot(1:length(fakeTones_tto),fakeTones_tto,'b*') % Target Tone-only
+    plot(1:length(fakeTones_easy),fakeTones_easy,'m*') % Target word (Hard)
+    plot(1:length(fakeTones_hard),fakeTones_hard,'c*') % Non-Target Target word (Easy)
     
     %%
     for ii = 1:length(tone)-1
@@ -206,7 +211,7 @@ for i = 1:numel(subs)
         plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
     elseif numel(idxTonesOn) == numel(fakeTones_tto)
-        plot(idxTonesOn,[fakeTones_tto],'b*') % Target Tone-only
+        plot(idxTsOn,[fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[fakeTones_hard],'c*') % Non-Target Target word (Easy)
     end
@@ -235,7 +240,7 @@ for i = 1:numel(subs)
         end
 %     end
 
-for ii = 1:numel(unique(bothStimidx))
+for ii = 1:numel(find(unique(bothStimidx)))
 [both1(ii),both2(ii)]=find(bothStimidx);
 figure
 plot(word)
@@ -243,12 +248,14 @@ ylabel('word')
 hold on
 plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
 plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-xlim([-500+idxStimOn(blah2(ii)) 500+idxStimOn(blah2(ii))])
+xlim([-500+idxStimOn(both2(ii)) 500+idxStimOn(both2(ii))])
 end
 
 unique(both2)
 sprintf('tones words both')
 [numel(find(realStimidx == 1)) numel(find(realStimidx == 3)) numel(find(realStimidx == 10))]
+
+%% make fakeTonesAndWords
 
     %% specify type of tone and word
     idxTonesOn_only = []; idxTonesOff_only = [];
