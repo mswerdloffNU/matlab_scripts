@@ -136,7 +136,223 @@ for i = 1:numel(subs)
     plot(idxStimOn,[1 1 1 1 1 1 fakeTones],'b-') % Target Tone-only
 
     plot(1:length(fakeTones),fakeTones,'b*')
-    %%
+    
+    %% create new fakeTones
+%     fakeTones_new = []; fakeTones_new_unlabeled = [];
+%     aa = 1;
+%     bb = 1;
+%     for ii = 1:numel(expList)
+%         if expList(ii) == 1
+%             fakeTones_new(aa:aa+((numEasy+numHard)-1)) = 1; % Non-target tone-only
+%             fakeTones_new(aa+((numEasy))) = 2; % Target Tone-only
+%             fakeTones_new_unlabeled(aa:aa+((numEasy+numHard)-1)) = 1; % Non-target tone-only
+%             fakeTones_new_unlabeled(aa+((numEasy))) = 1; % Target Tone-only
+%             aa = aa+((numEasy+numHard));
+%         elseif expList(ii) == 0
+%             fakeTones_new(aa:2:aa+(2*(numEasy+numHard)-1)) = 1; % Non-target tone-only
+%             fakeTones_new(aa+1:2:aa+(2*(numEasy+numHard)-1)) = 3; % Non-target word
+%             fakeTones_new_unlabeled(aa:2:aa+(2*(numEasy+numHard)-1)) = 1; % Non-target tone-only
+%             fakeTones_new_unlabeled(aa+1:2:aa+(2*(numEasy+numHard)-1)) = 3; % Non-target word
+%             if congruences(bb) == 0
+%                 if toneCategory(bb) == 71
+%                     fakeTones_new(aa+(2*numHard)) = 5; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 3; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 72
+%                     fakeTones_new(aa+(2*numHard)) = 7; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 7; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 3; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 73
+%                     fakeTones_new(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 5; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 3; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 74
+%                     fakeTones_new(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 5; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 3; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                 end      
+%             elseif congruences(bb) == 1
+%                 if toneCategory(bb) == 65
+%                     fakeTones_new(aa+(2*numHard)) = 4; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 3; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 66
+%                     fakeTones_new(aa+(2*numHard)) = 6; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 6; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 3; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 67
+%                     fakeTones_new(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 4; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 3; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                 elseif toneCategory(bb) == 68
+%                     fakeTones_new(aa+(2*numHard)) = 1; % Target word (Hard)
+%                     fakeTones_new(aa+(2*numHard)+1) = 4; % Non-Target Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)) = 3; % Target word (Hard)
+%                     fakeTones_new_unlabeled(aa+(2*numHard)+1) = 1; % Non-Target Target word (Hard)
+%                 end
+%             end
+%             aa = aa+(2*(numEasy+numHard));
+%             bb = bb+1;
+%         end
+%     end
+%     fakeTones_new = fakeTones_new';
+%     fakeTones_new_unlabeled = fakeTones_new_unlabeled';
+%     [numel(find(fakeTones_new==1)) numel(find(fakeTones_new==2)) numel(find(fakeTones_new==3)) ...
+%         numel(find(fakeTones_new==4)) numel(find(fakeTones_new==5))]
+%     
+% %     figure()
+% %     hold on
+% %     plot(idxStimOn,[1 1 1 1 1 1 fakeTones_new'],'b-') % Target Tone-only
+% %     plot(1:length(fakeTones_new),fakeTones_new,'b*')
+% 
+% diffz = realStimidx(1:3000,2)-fakeTones_new_unlabeled;
+% problemos = find(diffz)
+% 
+% %%
+% ii = 19;
+% figure
+% plot(word)
+% ylabel('word')
+% hold on
+% plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+% plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+% plot(idxStimOn,[fakeTones_tto 0 0 0 0 0 0 ],'b*') % Target Tone-only
+% plot(idxStimOn,[fakeTones_easy 0 0 0 0 0 0 ],'m*') % Target word (Hard)
+% plot(idxStimOn,[fakeTones_hard 0 0 0 0 0 0 ],'c*') % Non-Target Target word (Easy)
+% ylim([.9 1.2])
+% while ii < numel(problemos)
+%     [ii numel(problemos)]
+%     xlim([idxStimOn(problemos(ii))-1000 idxStimOn(problemos(ii))+1000])
+%     pause
+%     ii = ii + 1;
+% end
+% 
+% %%
+% flaggies = [19];
+% for ii = 1:numel(flaggies)
+%     figure
+%     plot(word,'-')
+%     hold on
+%     plot(idxStimOn(problemos(flaggies(ii))),word(idxStimOn(problemos(flaggies(ii)))),'ro')
+%     xlim([idxStimOn(problemos(flaggies(ii)))-2500 idxStimOn(problemos(flaggies(ii)))+2500])
+%     ylim([0.9 1.2])
+%     txt = ['the word value is ' num2str(word(idxStimOn(problemos(flaggies(ii)))))];
+%     text(idxStimOn(problemos(flaggies(ii)))+50,(word(idxStimOn(problemos(flaggies(ii)))))+.1, txt)
+%     pause
+% end
+% 
+% % check to look for more incorrect stim
+% for cc = 1:10
+%     newword(cc) = idxStimOn(problemos(flaggies(ii)))+cc-5;
+% end
+% [(1:10)', word(newword)]
+% %% change word and replot with new word
+% word(idxStimOn(problemos(flaggies(ii)))) = 0;
+% word(idxStimOn(problemos(flaggies(ii)))+1) = 0;
+% 
+% flaggies = [19];
+% for ii = 1:numel(flaggies)
+%     figure
+%     plot(word,'-')
+%     hold on
+%     plot(idxStimOn(problemos(flaggies(ii))),word(idxStimOn(problemos(flaggies(ii)))),'ro')
+%     xlim([idxStimOn(problemos(flaggies(ii)))-2500 idxStimOn(problemos(flaggies(ii)))+2500])
+%     ylim([0.9 1.2])
+%     txt = ['the word value is ' num2str(word(idxStimOn(problemos(flaggies(ii)))))];
+%     text(idxStimOn(problemos(flaggies(ii)))+50,(word(idxStimOn(problemos(flaggies(ii)))))+.1, txt)
+%     pause
+% end
+
+%% redo new wordidx and new realStimidx_nz
+    for ii = 1:length(word)-1
+        if word(ii) == 0 && word(ii+1) == 1
+            wordOnset(ii+1) = ii+1;
+        end
+    end
+    idxWordsOn = find(wordOnset);
+    
+% categorize real stimuli pattern
+idxStimOn = union(idxTonesOn, idxWordsOn);
+realWordidx = []; realStimidx_nz = [];
+for ii = 1:numel(idxStimOn)
+    triggerOnly = idxStimOn(ii);
+    if  isempty(find(idxTonesOn == triggerOnly)) == 1
+        [realWordidx(ii),~] = find(idxWordsOn == triggerOnly);
+        realStimidx_nz(ii,1) = idxWordsOn(realWordidx(ii));
+        realStimidx_nz(ii,2) = 3;
+    elseif isempty(find(idxWordsOn == triggerOnly)) == 1
+        [realToneidx(ii),~] = find(idxTonesOn == triggerOnly);
+        realStimidx_nz(ii,1) = idxTonesOn(realToneidx(ii));
+        realStimidx_nz(ii,2) = 1;
+    else
+        [realToneidx(ii),~] = find(idxTonesOn == triggerOnly);
+        realStimidx_nz(ii,1) = idxTonesOn(realToneidx(ii));
+        realStimidx_nz(ii,2) = 10;
+        bothStimidx(ii) = idxTonesOn(realToneidx(ii));
+    end
+end
+
+for ii = 1:numel(find(unique(bothStimidx)))
+[both1(ii),both2(ii)]=find(bothStimidx);
+figure
+plot(word)
+ylabel('word')
+hold on
+plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+xlim([-500+idxStimOn(both2(ii)) 500+idxStimOn(both2(ii))])
+end
+
+unique(both2)
+sprintf('tones words both')
+[numel(find(realStimidx == 1)) numel(find(realStimidx == 3)) numel(find(realStimidx == 10))]
+
+
+%% redo with new problemos
+realStimidx(problemos(flaggies(ii)),2) = 0;
+realStimidx_nz = nonzeros(realStimidx(:,2));
+diffz_new = realStimidx_nz(1:length(fakeTones_new_unlabeled))-fakeTones_new_unlabeled;
+problemos_new = find(diffz_new)
+
+%%
+ee = flaggies(ii);
+figure
+plot(word)
+ylabel('word')
+hold on
+plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
+plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
+plot(idxStimOn,[fakeTones_tto 0 0 0 0 0 0 ],'b*') % Target Tone-only
+plot(idxStimOn,[fakeTones_easy 0 0 0 0 0 0 ],'m*') % Target word (Hard)
+plot(idxStimOn,[fakeTones_hard 0 0 0 0 0 0 ],'c*') % Non-Target Target word (Easy)
+ylim([.9 1.2])
+while ee < numel(problemos_new)
+    [ee numel(problemos_new)]
+    xlim([idxStimOn(problemos_new(ee))-1000 idxStimOn(problemos_new(ee))+1000])
+    pause
+    ee = ee + 1;
+end
+%%
+
+
+
+
+
+
+
+
+
+
+
+%%
+    fakeTones = fakeTones_new;
     fakeTones_tto = zeros(1,numel(fakeTones));
     fakeTones_easy = zeros(1,numel(fakeTones));
     fakeTones_hard = zeros(1,numel(fakeTones));
@@ -146,13 +362,13 @@ for i = 1:numel(subs)
             fakeTones_tto(ii) = 1;
             fakeTones_hard(ii) = 0;
             fakeTones_easy(ii) = 0;
-            aa = aa+1;
-        elseif fakeTones(ii) == 4
+            aa = aa+1; 
+        elseif fakeTones(ii) == 4 || fakeTones(ii) == 6
             fakeTones_easy(ii) = 1;
             fakeTones_hard(ii) = 0;
             fakeTones_tto(ii) = 0;
             bb = bb+1;
-        elseif fakeTones(ii) == 5
+        elseif fakeTones(ii) == 5 || fakeTones(ii) == 7
             fakeTones_hard(ii) = 1;
             fakeTones_easy(ii) = 0;
             fakeTones_tto(ii) = 0;
@@ -204,14 +420,19 @@ for i = 1:numel(subs)
     hold on
     plot(idxTonesOn,ones(1,numel(idxTonesOn)),'ko')
     plot(idxTonesOff,ones(1,numel(idxTonesOff)),'k+')
-    plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
-    plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
+%     plot(idxWordsOn,ones(1,numel(idxWordsOn)),'co')
+%     plot(idxWordsOff,ones(1,numel(idxWordsOff)),'co')
+    
+        plot(idxStimOn,[fakeTones_tto 0 0 0 0 0 0 ],'b*') % Target Tone-only
+        plot(idxStimOn,[fakeTones_easy 0 0 0 0 0 0 ],'m*') % Target word (Hard)
+        plot(idxStimOn,[fakeTones_hard 0 0 0 0 0 0 ],'c*') % Non-Target Target word (Easy)
+        
     if strfind(sub,'S024_SA')==1
         plot(idxTonesOn,[1 fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[1 fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[1 fakeTones_hard],'c*') % Non-Target Target word (Easy)
     elseif numel(idxTonesOn) == numel(fakeTones_tto)
-        plot(idxTsOn,[fakeTones_tto],'b*') % Target Tone-only
+        plot(idxTonesOn,[fakeTones_tto],'b*') % Target Tone-only
         plot(idxTonesOn,[fakeTones_easy],'m*') % Target word (Hard)
         plot(idxTonesOn,[fakeTones_hard],'c*') % Non-Target Target word (Easy)
     end
