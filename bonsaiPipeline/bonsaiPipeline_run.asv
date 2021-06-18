@@ -23,14 +23,14 @@ loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
 loc_erp = [loc_save 'AR\'];
 loc_sswAccel = [loc_main 'sswAccel\'];
 %%
-expt = 5;
+expt = 2;
 %expt 1 = sit stand walk pilot
 %expt 2 = sit stand walk full
 %expt 3 = strooptest pilot
 %expt 4 = strooptest full
-%expt 5 = sit stand walk full with accel
+%expt
 %%
-if expt == 5 % sit stand walk full with accel
+if expt == 2 % sit stand walk full
     cd(loc_sswAccel)
     sswAccel
 elseif expt == 4
