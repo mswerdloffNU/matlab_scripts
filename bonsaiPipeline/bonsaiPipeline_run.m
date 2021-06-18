@@ -22,6 +22,7 @@ loc_binlist = [loc_save 'binlist10.txt'];
 loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
 loc_erp = [loc_save 'AR\'];
 loc_sswAccel = [loc_main 'sswAccel\'];
+loc_dsi_all = [loc_data 'EEG\DSI_data\All\'];
 %%
 expt = 5;
 %expt 1 = sit stand walk pilot
@@ -31,6 +32,7 @@ expt = 5;
 %expt 5 = sit stand walk full with accel
 %%
 if expt == 5 % sit stand walk full with accel
+    accelfile = [loc_dsi_all 'S014_walk_stand_sit_C_duration_Accel.csv'];
     cd(loc_sswAccel)
     sswAccel
 elseif expt == 4

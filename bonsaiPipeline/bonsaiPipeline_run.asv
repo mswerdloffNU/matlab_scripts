@@ -22,16 +22,18 @@ loc_binlist = [loc_save 'binlist10.txt'];
 loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
 loc_erp = [loc_save 'AR\'];
 loc_sswAccel = [loc_main 'sswAccel\'];
+loc_dsi_all = [loc_data 'EEG\DSI_data\All\'];
 %%
-expt = 2;
+expt = 5;
 %expt 1 = sit stand walk pilot
 %expt 2 = sit stand walk full
 %expt 3 = strooptest pilot
 %expt 4 = strooptest full
-%expt
+%expt 5 = sit stand walk full with accel
 %%
-if expt == 2 % sit stand walk full
+if expt == 5 % sit stand walk full with accel
     cd(loc_sswAccel)
+    accelfile = [loc_dsi_all 'S014_walk_stand_sit_C_duration_Accel.csv'];
     sswAccel
 elseif expt == 4
     %% which parts to run
