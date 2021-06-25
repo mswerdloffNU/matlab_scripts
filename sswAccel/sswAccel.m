@@ -111,6 +111,7 @@ plot([1:length(Ax_300)],Ax_300(1:end),'.')
 % how do I know that that's good? ^
 
 accel_table = [Time_accel,zeros(length(Time_accel),1)];
+Trigger_accel = zeros(length(Time_accel),1);
 % choose nearest value
 for ii = 1:length(trigs)
     n=Time_dsi(trigs(ii));
@@ -120,17 +121,31 @@ for ii = 1:length(trigs)
     if eeg_table(trigs(ii),2) == 0
         pause
     else
+        Trigger_accel(minidx) = eeg_table(trigs(ii),2);
         accel_table(minidx,2) = eeg_table(trigs(ii),2);
     end
 end
-end
 %% create table
-tbl_raw_Accel = [Ax,Ay,Az,Trigger]'; % create tbl
-%% Re-reference channels
-Pz_LE = -1*LE; % reference Pz to LE
-F4_LE = F4-LE; C4_LE = C4-LE; P4_LE = P4-LE; P3_LE = P3-LE; C3_LE = C3-LE; F3_LE = F3-LE; % reference all other channels to LE
+tbl_raw_Accel = [Ax,Ay,Az,Trigger_accel]'; % create tbl
 
 %% move to EEGLAB
-% cd(loc_eeglab)
-% eeglab
+cd(loc_eeglab)
 
+        location = strcat(location2,filename);
+        setName = strrep(filename,'.mat','_eq');
+        erpName = strcat('erpset_',setName,'_ICA_Num');
+        filename_info = strrep(location,'.mat','_info_pt2.mat');
+        erpFilename = strrep(erpName,'_ICA_Num','_ICA_Num.erp');
+        eventlistA = strrep(location,'.mat','_ICA_EventListA.txt');
+        eventlistB = strrep(location,'.mat','_ICA_EventListB.txt');
+        startSet = 0;
+        setpreICA = strrep(location,'.mat','_preICA.set');
+        setICA = strrep(location,'.mat','_ICA.set');
+        setBinned = strrep(location,'.mat','_ICA_elist_bins.set');
+        setEpoched = strrep(location,'.mat','_ICA_elist_bins_be.set');
+        setRejected = strrep(location,'.mat','_ICA_elist_bins_be_rejected.set');
+        trialsTxt = strrep(location,'.mat','trialsNum.txt');
+        erpText = strrep(location,'.mat','_ICA_Num.txt');
+        %% open new set
+        [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+end
