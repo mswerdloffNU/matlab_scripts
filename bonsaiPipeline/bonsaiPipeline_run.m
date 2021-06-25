@@ -23,6 +23,7 @@ loc_ced = [loc_user 'eeglab\chanlocsDSI7.ced'];
 loc_erp = [loc_save 'AR\'];
 loc_sswAccel = [loc_main 'sswAccel\'];
 loc_dsi_all = [loc_data 'EEG\DSI_data\All\'];
+
 %%
 expt = 5;
 %expt 1 = sit stand walk pilot
