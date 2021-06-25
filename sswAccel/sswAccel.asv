@@ -95,12 +95,7 @@ dataLines = [9, Inf]; % specify times and channels
 [Time, Ax, Ay, Az, Seq] = importRawAccel(accelfile,dataLines); % import
 
 %% combined table
-trigs = find(eeg_table(:,2));
-for ii = 1:length(trigs)
-    for nn = 1:length(Time)
-        trigTime(ii) = find(Time(nn) == eeg_table(trigs(ii),1))
-    end
-end
+trigs, ~] = find(eeg_table(:,2))
 end
 %% create table
 tbl_raw_Accel = [Ax,Ay,Az,Trigger]'; % create tbl

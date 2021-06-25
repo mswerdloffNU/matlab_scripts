@@ -12,7 +12,7 @@ subs = {'S025_SA_0001'}; % stim conversion
 loc_user = 'C:\Users\mswerdloff\';
 loc_main = [loc_user 'Documents\GitHub\matlab_scripts\'];
 loc_scripts = [loc_main 'StroopTest'];
-loc_bonsaiPipeline = [loc_main 'bonsaiPipeline'];
+loc_bonsaiPipeline = [loc_main 'bonsaiPipeline\'];
 loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
 loc_dsi = [loc_data 'EEG\DSI_data\StroopAudio\study1\'];
 loc_save = [loc_data 'EEG\Matlab_data\StroopAudio\study1\'];
@@ -32,9 +32,13 @@ expt = 5;
 %expt 5 = sit stand walk full with accel
 %%
 if expt == 5 % sit stand walk full with accel
-    accelfile = [loc_dsi_all 'S014_walk_stand_sit_C_duration_Accel.csv'];
-    cd(loc_sswAccel)
+    accelfile = [loc_dsi_all 'S014_stand_sit_walk_A_0001_duration_Accel.csv'];
+    addpath(loc_sswAccel)
     sswAccel
+%     cd(loc_bonsaiPipeline)
+%     bonsaiPipeline_6_13_2stim_new
+%     bonsaiPipeline_6_13_2stim_part2_new
+%     bonsaiPipeline_6_13_2stim_part3_new
 elseif expt == 4
     %% which parts to run
     needStimConvert = 1; % change to 1 to make stim
