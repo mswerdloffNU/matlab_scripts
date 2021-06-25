@@ -88,17 +88,39 @@ endRow = inf; % time = end of trial
 %% import eeg table
 addpath(loc_sit)
 eeg_struct = open(filename);
-eeg_table = [Time_csv, eeg_struct.tbl_filt_a_b_2_tr(8,:)'];
+eeg_table = [Time_dsi, eeg_struct.tbl_filt_a_b_2_tr(8,:)'];
 
 %% import accel
 dataLines = [9, Inf]; % specify times and channels
-[Time, Ax, Ay, Az, Seq] = importRawAccel(accelfile,dataLines); % import
+[Time_accel, Ax, Ay, Az, Seq] = importRawAccel(accelfile,dataLines); % import
 
 %% combined table
 trigs = find(eeg_table(:,2));
+
+% try to find matching times
+for ii = 1:numel(trigs)
+    trigTime(ii) = find(Time_accel==Time_dsi(trigs(ii),1))
+end
+
+% resample
+Ax_300 = resample(Ax(1:end),10,1);
+figure
+hold on
+plot([1:10:length(Ax_300)],Ax,'o')
+plot([1:length(Ax_300)],Ax_300(1:end),'.')
+% how do I know that that's good? ^
+
+accel_table = [Time_accel,zeros(length(Time_accel),1)];
+% choose nearest value
 for ii = 1:length(trigs)
-    for nn = 1:length(Time)
-        trigTime(ii) = find(Time(nn) == eeg_table(trigs(ii),1))
+    n=Time_dsi(trigs(ii));
+    idx=abs(Time_accel-n);
+    [~,minidx] = min(idx);
+    minVal(ii)=Time_accel(minidx);
+    if eeg_table(trigs(ii),2) == 0
+        pause
+    else
+        accel_table(minidx,2) = eeg_table(trigs(ii),2);
     end
 end
 end
