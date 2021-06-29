@@ -366,14 +366,33 @@ rms_C_allsubs = [rms_allsubs(1).rmsC,rms_allsubs(2).rmsC,rms_allsubs(3).rmsC,rms
 
 figure
 subplot(1,3,1)
-histogram(rms_sit_allsubs)
+histogram(rms_sit_allsubs,6)
 xlim([0 .08])
 subplot(1,3,2)
-histogram(rms_stand_allsubs)
+histogram(rms_stand_allsubs,6)
 xlim([0 .08])
 subplot(1,3,3)
-histogram(rms_walk_allsubs)
+histogram(rms_walk_allsubs,6)
 xlim([0 .08])
+
+axisHandle = gca;                         %handle to the axis that contains the histogram
+histHandle = axisHandle.Children;         %handle to the histogram
+histData = histHandle.Data;               %The first input to histogram()
+binEdges = histHandle.BinEdges;           %The second input to histogram() (bin edges)
+barHeight = histHandle.Values; 
+
+for ii = 1:6
+binsWalk(ii) = round((ii-1)*numel(rms_walk_allsubs)/6);
+end
+
+rms_walk_allsubs_sort = sort(rms_walk_allsubs);
+
+rms_walk_allsubs_bin1 = rms_walk_allsubs_sort(1:binsWalk(2));
+rms_walk_allsubs_bin2 = rms_walk_allsubs_sort(binsWalk(2)+1:binsWalk(3));
+rms_walk_allsubs_bin3 = rms_walk_allsubs_sort(binsWalk(3)+1:binsWalk(4));
+rms_walk_allsubs_bin4 = rms_walk_allsubs_sort(binsWalk(4)+1:binsWalk(5));
+rms_walk_allsubs_bin5 = rms_walk_allsubs_sort(binsWalk(5)+1:binsWalk(6));
+rms_walk_allsubs_bin6 = rms_walk_allsubs_sort(binsWalk(6)+1:end);
 
 % save fig
 if savefiles == 1
