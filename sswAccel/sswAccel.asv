@@ -367,13 +367,10 @@ rms_C_allsubs = [rms_allsubs(1).rmsC,rms_allsubs(2).rmsC,rms_allsubs(3).rmsC,rms
 figure
 subplot(1,3,1)
 histogram(rms_sit_allsubs)
-xlim([0 .08])
 subplot(1,3,2)
 histogram(rms_stand_allsubs)
-xlim([0 .08])
 subplot(1,3,3)
 histogram(rms_walk_allsubs)
-xlim([0 .08])
 
 % save fig
 if savefiles == 1
@@ -385,13 +382,10 @@ end
 figure
 subplot(1,3,1)
 histogram(rms_A_allsubs)
-xlim([0 .08])
 subplot(1,3,2)
 histogram(rms_B_allsubs)
-xlim([0 .08])
 subplot(1,3,3)
 histogram(rms_C_allsubs)
-xlim([0 .08])
 
 % save fig
 if savefiles == 1
@@ -404,5 +398,5 @@ end
 fnm = sprintf('rms_all_%s.mat',setName);
 cd(loc_save)
 if savefiles == 1
-    save(fnm,'rms_allsubs','rms_sit_allsubs','rms_stand_allsubs','rms_walk_allsubs','rms_A_allsubs','rms_B_allsubs','rms_C_allsubs','-mat');
+    save(fnm,'ntrials_accel','rms_sit_allsubs','rms_stand_allsubs','rms_walk_allsubs','rms_A_allsubs','rms_B','rms_C','-mat');
 end
