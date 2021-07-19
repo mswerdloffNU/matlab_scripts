@@ -1,8 +1,8 @@
 clear all
 close all
 clc
-sub = 'Pilot';
-loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\StroopAudio\',sub);
+sub = 'S003';
+loc_sub = strcat('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\Pilot2\',sub);
 
 %% arduino generator
 % cd 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\2_24_19'
