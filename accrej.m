@@ -2,11 +2,11 @@ clear
 %% this loads all subs
 load('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\Pilot2\Pilot2_rejectedAcceptedTrials_allSubs_eq.mat')
 
-RejectedTrials_sub_eq = RejectedTrials_S014_eq;
 %%
 all_possible_subs = {'S003','S006','S007','S008','S009','S010','S012','S013','S014'};
 
-subs = all_possible_subs; % run all subs
+subs =  {'S003','S007','S010','S012','S013','S014'};
+ % run all subs
 % subs = {'S014','S003'}; % stim conversion
 % subs = {'S026_SA_0002'}; % pt 1
 loc_user = 'C:\Users\mswerdloff\';
@@ -14,18 +14,42 @@ loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
 loc_eeglab = [loc_user 'eeglab\eeglab2021_0'];
 loc_source = [loc_data 'EEG\Matlab_data\Pilot2\'];
 loc_save = [loc_data 'EEG\Matlab_data\Pilot2_Accel\'];
+RejectedTrials_sub_eq = [];
 
-for mm = 1:1%length(subs)
+for mm = 1:length(subs)
     sub = subs{mm};
-    sub = 'S014';
 
+    if strcmp(sub,'S003')==1
+        RejectedTrials_sub_eq = RejectedTrials_S003_eq;
+    elseif strcmp(sub,'S006')==1
+        RejectedTrials_sub_eq = RejectedTrials_S006_eq;
+    elseif strcmp(sub,'S007')==1
+        RejectedTrials_sub_eq = RejectedTrials_S007_eq;
+    elseif strcmp(sub,'S008')==1
+        RejectedTrials_sub_eq = RejectedTrials_S008_eq;
+    elseif strcmp(sub,'S009')==1
+        RejectedTrials_sub_eq = RejectedTrials_S009_eq;
+    elseif strcmp(sub,'S010')==1
+        RejectedTrials_sub_eq = RejectedTrials_S010_eq;
+    elseif strcmp(sub,'S012')==1
+        RejectedTrials_sub_eq = RejectedTrials_S012_eq;
+    elseif strcmp(sub,'S013')==1
+        RejectedTrials_sub_eq = RejectedTrials_S013_eq;
+    elseif strcmp(sub,'S014')==1
+        RejectedTrials_sub_eq = RejectedTrials_S014_eq;
+    else
+        pause
+    end
+    
     cond = {'sit' 'stand' 'walk'};
     filepaths = {};
     for ii = 1:numel(cond)
         filepaths{ii} =  [loc_source sub '\' cond{ii}];
     end
 
-    for nn = 1:1%numel(filepaths)
+    sitABC_acc = []; standABC_acc = []; walkABC_acc = [];
+    
+    for nn = 1:numel(filepaths)
         
         % find filename for each session A, B, and C
         cd(filepaths{nn})
@@ -59,15 +83,15 @@ for mm = 1:1%length(subs)
         
         typeA = [ALLEEG(1).urevent.type].';
         latencyA = [ALLEEG(1).urevent.latency].';
-        sesssionA_rej = [latencyA, typeA, table2array(RejectedTrials_sub_eq(1:301,nn))];
+        sessionA_rej = [latencyA, typeA, table2array(RejectedTrials_sub_eq(1:301,nn))];
         
         typeB = [ALLEEG(2).urevent.type].';
         latencyB = [ALLEEG(2).urevent.latency].';
-        sesssionB_rej = [latencyB, typeB, table2array(RejectedTrials_sub_eq(302:602,nn))];
+        sessionB_rej = [latencyB, typeB, table2array(RejectedTrials_sub_eq(302:602,nn))];
         
         typeC = [ALLEEG(3).urevent.type].';
         latencyC = [ALLEEG(3).urevent.latency].';
-        sesssionC_rej = [latencyC, typeC, table2array(RejectedTrials_sub_eq(603:903,nn))];
+        sessionC_rej = [latencyC, typeC, table2array(RejectedTrials_sub_eq(603:903,nn))];
         
         %%  for each session A, B, and C, count up the number of targets (1) and nontargets (2) that were included (and excluded targets (4))
         session_rej = sessionA_rej;
@@ -113,19 +137,23 @@ for mm = 1:1%length(subs)
         [numel(find(session_acc == 1)) numel(find(session_acc == 4)) numel(find(session_acc == 2))]
         
         % pause if there aren't the right number of accepter targets included
-        num_acc_targets = numel(find(sessionA_acc==1))+numel(find(sesssionB_acc==1))+numel(find(sessionC_acc==1));
+        num_acc_targets = numel(find(sessionA_acc==1))+numel(find(sessionB_acc==1))+numel(find(sessionC_acc==1));
         if num_acc_targets ~= 37
             pause
         end
         
         %save sessionA_acc etc. and rename as necessary
         sessionsABC_acc = array2table([sessionA_acc;sessionB_acc;sessionC_acc]);
+        sessionsABC_latency = array2table([latencyA;latencyB;latencyC]);
         if nn == 1 && strcmp('sit',cond{nn})==1
-            sitABC_acc = sessionsABC_acc_vert;
+            sitABC_acc = sessionsABC_acc;
+            sitABC_latency = sessionsABC_latency;
         elseif nn == 2 && strcmp('stand',cond{nn})==1
             standABC_acc = sessionsABC_acc;
+            standABC_latency = sessionsABC_latency;
         elseif nn == 3 && strcmp('walk',cond{nn})==1
             walkABC_acc = sessionsABC_acc;
+            walkABC_latency = sessionsABC_latency;
         else
             pause
         end
@@ -143,11 +171,22 @@ for mm = 1:1%length(subs)
         
     end
     
-    % combine acc for all conditions into one table in old format
+    % for accepted trials: combine acc for all conditions into one table in old format
+    condsABC_acc = [];
     condsABC_acc = [table2array(sitABC_acc),table2array(standABC_acc),table2array(walkABC_acc)];
+    allcondsABC_acc = [];
     allcondsABC_acc = array2table(condsABC_acc);
     allcondsABC_acc.Properties.VariableNames{1} = 'sit';
     allcondsABC_acc.Properties.VariableNames{2} = 'stand';
+    allcondsABC_acc.Properties.VariableNames{3} = 'walk';
+    
+    % for latency: combine latency for all conditions into one table in old format
+    condsABC_latency = [];
+    condsABC_latency = [table2array(sitABC_latency),table2array(standABC_latency),table2array(walkABC_latency)];
+    allcondsABC_latency = [];
+    allcondsABC_latency = array2table(condsABC_latency);
+    allcondsABC_latency.Properties.VariableNames{1} = 'sit';
+    allcondsABC_latency.Properties.VariableNames{2} = 'stand';
     allcondsABC_acc.Properties.VariableNames{3} = 'walk';
     
     % save acc tables
@@ -155,6 +194,13 @@ for mm = 1:1%length(subs)
     cd(loc_save)
 %     if savefiles == 1
         save(fnm,'allcondsABC_acc','-mat');
+%     end    
+
+    % save latency tables
+    fnm = sprintf('%s_latency_allconds.mat',sub);
+    cd(loc_save)
+%     if savefiles == 1
+        save(fnm,'allcondsABC_latency','-mat');
 %     end
 end
 %% failed attempts:
