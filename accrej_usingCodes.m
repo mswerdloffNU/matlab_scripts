@@ -86,7 +86,7 @@ for mm = 1:length(subs)
       
 %     check37 = [numel(find(targets_accepted(:,1)==1)) numel(find(targets_accepted(:,2)==1)) numel(find(targets_accepted(:,3)==1))];
     check37 = zeros(1,3);
-    check37 = [numel(find(codes_accepted(:,1)==1)) numel(find(codes_accepted(:,2)==2)) numel(find(codes_accepted(:,3)==1))];
+    check37 = [numel(find(codes_accepted(:,1)==1)) numel(find(codes_accepted(:,2)==1)) numel(find(codes_accepted(:,3)==1))];
     if check37(1) == 37 && check37(2) == 37 && check37(3) == 37
         sprintf('we good!')
     else
@@ -103,6 +103,6 @@ for mm = 1:length(subs)
     % save acc tables
     fnm = sprintf('%s_codesAccepted.mat',sub);
     cd(loc_save)
-    save(fnm,'codesAccepted','-mat');
+%     save(fnm,'codesAccepted','-mat');
 
 end

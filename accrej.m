@@ -6,7 +6,7 @@ load('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\Pilot2\c
 %%
 all_possible_subs = {'S003','S006','S007','S008','S009','S010','S012','S013','S014'};
 
-subs =  {'S003','S007','S010','S012','S013','S014'};
+subs =  {'S003','S007','S010','S012','S013','S014'}; %these have the right amounts (37 targets)
  % run all subs
 % subs = {'S014','S003'}; % stim conversion
 % subs = {'S026_SA_0002'}; % pt 1
@@ -16,6 +16,7 @@ loc_eeglab = [loc_user 'eeglab\eeglab2021_0'];
 loc_source = [loc_data 'EEG\Matlab_data\Pilot2\'];
 loc_save = [loc_data 'EEG\Matlab_data\Pilot2_Accel\'];
 RejectedTrials_sub_eq = [];
+savefiles = 1;
 
 for mm = 1:length(subs)
     sub = subs{mm};
@@ -139,7 +140,7 @@ for mm = 1:length(subs)
         [numel(find(session_acc == 1)) numel(find(session_acc == 4)) numel(find(session_acc == 2))]
         
         % pause if there aren't the right number of accepter targets included
-        num_acc_targets = numel(find(sessionA_acc==1))+numel(find(sessionB_acc==1))+numel(find(sessionC_acc==1));
+        num_acc_targets = numel(find(sessionA_acc==1))+numel(find(sessionB_acc==1))+numel(find(sessionC_acc==1))
         if num_acc_targets ~= 37
             pause
         end
@@ -161,6 +162,7 @@ for mm = 1:length(subs)
             pause
         end
        
+        
 %         % save each session in a new format
 %         SessionsABC_acc{nn,1} = sessionA_acc;
 %         SessionsABC_acc{nn,2} = cond{nn};
