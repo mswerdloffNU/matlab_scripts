@@ -1,36 +1,28 @@
 all_possible_subs = {'S003','S006','S007','S008','S009','S010','S012','S013','S014'};
 
 subs =  {'S003','S007','S010','S012','S013','S014'}; %these have the right amounts (37 targets)
-% subs = all_possible_subs; % run all subs
-% subs = {'S014','S003'}; % stim conversion
-% subs = {'S026_SA_0002'}; % pt 1
 loc_user = 'C:\Users\mswerdloff\';
 loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
 loc_eeglab = [loc_user 'eeglab\eeglab2021_0'];
 loc_source = [loc_data 'EEG\Matlab_data\Pilot2\'];
 loc_save = [loc_data 'EEG\Matlab_data\Pilot2_Accel\'];
 
-%import sitABC_acc, standABC_acc, and walkABC from S2
+for ii = 1:length(subs) 
 
-for ii = 1:length(subs) % number of subs
-
-%import codesAccepted from S1
+%import codesAccepted from S1, one sub at a time
 cd(loc_save)
 temp = strcat(subs(ii),'*_codesAccepted.mat');
-temp1 = dir(temp{ii});
-filename = temp1(ii).name;
-load(filename)
+temp1 = dir(temp{1});
+filename_codesAccepted = temp1.name;
+load(filename_codesAccepted)
 codesAcceptedS1 = codesAccepted; %rename codesAccepted from S1
 
-%import data from S2:
-% import S00X_acceptedTrials_allconds.mat
-
-%trash i think:
-% % temp2 = [table2array(sitABC_acc),table2array(standABC_acc),table2array(walkABC_acc)];
-% % codesAcceptedS2 = array2table(temp2);
-% % codesAcceptedS2.Properties.VariableNames{1} = 'sit';
-% % codesAcceptedS2.Properties.VariableNames{2} = 'stand';
-% % codesAcceptedS2.Properties.VariableNames{3} = 'walk';
+%import allcondsABC_accfrom S2, one sub at a time
+temp = strcat(subs(ii),'*_acceptedTrials_allconds.mat');
+temp1 = dir(temp{1});
+filename_acceptedTrials_allconds = temp1.name;
+load(filename_acceptedTrials_allconds)
+codesAcceptedS2 = allcondsABC_acc; %rename allcondsABC_acc from S2
 
 % create new table for comparing
 codesCompare = zeros(size(codesAcceptedS1));
