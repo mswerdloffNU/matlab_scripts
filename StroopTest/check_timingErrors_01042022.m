@@ -8,6 +8,8 @@ cd('..\StroopTest')
 
 %kt is the best
 %kt is the best trial 210102939
+%testing at the airport 123
+
 subs = {'AB040821_v1'};
 
 tmEr_data = [];
