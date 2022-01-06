@@ -1,5 +1,5 @@
 clearvars
-cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest')
+cd('..\StroopTest')
 
 %subs = {'S027_SA'};
 
