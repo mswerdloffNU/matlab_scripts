@@ -6,6 +6,7 @@ cd('Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\matlab_scripts\StroopTest'
 % subs = {'S020_SA','S021_SA_0001','S023_SA','S024_SA','S025_SA_0001','S026_SA_0002','S027_SA','S028_SA_0004','S029_SA_0002','S030_SA','S031_SA_0002',...
 % 'S032_SA','S033_SA','S035_SA','S036_SA','S037_SA','S038_SA','S039_SA','S040_SA'};
 
+%kt is the best
 subs = {'AB040821_v1'};
 
 tmEr_data = [];
