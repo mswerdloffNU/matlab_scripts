@@ -1,11 +1,11 @@
 %% Remove additional targets as needed
 % Do this for each subject
-location = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG-gait\EEG\Matlab_data\Pilot2\S014';
+location = 'Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\Pilot2\S006';
 
 clear codesAll x_all
-codesAll = codes_all_S014;
+codesAll = codes_all_S006;
 
-x_all = table2array(RejectedTrials_S014);
+x_all = table2array(RejectedTrials_S006);
 x_all_sit = [x_all(:,1);x_all(:,2);x_all(:,3)];
 x_all_stand = [x_all(:,4);x_all(:,5);x_all(:,6)];
 x_all_walk = [x_all(:,7);x_all(:,8);x_all(:,9)];
@@ -214,16 +214,16 @@ targetsAccepted_sit = sum(targetsAccepted(1));
 targetsAccepted_stand = sum(targetsAccepted(2));
 targetsAccepted_walk = sum(targetsAccepted(3));
 targetsAccepted_all = [targetsAccepted_sit,targetsAccepted_stand,targetsAccepted_walk];
-targetsAccepted_all_S014_eq = [targetsAccepted_sit,targetsAccepted_stand,targetsAccepted_walk,min(targetsAccepted_all)]
+targetsAccepted_all_S006_eq = [targetsAccepted_sit,targetsAccepted_stand,targetsAccepted_walk,min(targetsAccepted_all)]
 % totalAccepted_all_S003_new = [sum(totalAccepted(1:3)),sum(totalAccepted(4:6)),sum(totalAccepted(7:9))];
-totalAccepted_all_S014_eq = [sum(totalAccepted(1)),sum(totalAccepted(2)),sum(totalAccepted(3))];
-RejectedTrials_S014_eq = array2table(rejectedTrials_new,'VariableNames',{'Sit','Stand','Walk'});
+totalAccepted_all_S006_eq = [sum(totalAccepted(1)),sum(totalAccepted(2)),sum(totalAccepted(3))];
+RejectedTrials_S006_eq = array2table(rejectedTrials_new,'VariableNames',{'Sit','Stand','Walk'});
 % targetsAccepted_all_S014_eq_sep = [numel(find(codesAll(1:301,1) targetsAccepted_all_S014_eq(302:602,2) 
     
-if targetsAccepted_all_S014_eq == ones(1,4)*(targetsNewNum)
+if targetsAccepted_all_S006_eq == ones(1,4)*(targetsNewNum)
     sprintf('good sub!')
     cd(location)
-    save('rejectedAcceptedTrials_S014_eq.mat','RejectedTrials_S014_eq','targetsAccepted_all_S014_eq','totalAccepted_all_S014_eq'); % save list of numbers of targets accepted
+%     save('rejectedAcceptedTrials_S014_eq.mat','RejectedTrials_S014_eq','targetsAccepted_all_S014_eq','totalAccepted_all_S014_eq'); % save list of numbers of targets accepted
 else
     sprintf('uh oh, something went wrong')
 end

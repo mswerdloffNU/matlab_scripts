@@ -1,5 +1,10 @@
+%% description for sswAccel.m
+% use with run->sswAccel
+% makes histograms; can change # of bins using ‘edges’ line 441
+
 sprintf('hi!')
 addpath('C:\Users\mswerdloff\Documents\GitHub\matlab_scripts\StroopTest')
+
 %% specify source files
 for mm = 1:length(subs)
     sub = subs{mm};
@@ -67,11 +72,45 @@ for mm = 1:length(subs)
     Files = table2struct(merge_t);
     
     %% specify destination folders
-    loc_dest = strrep(loc_sub,'Pilot2','Pilot2_Accel');
+    loc_dest = strrep(loc_sub,'Pilot2','Pilot2_Accel\12_21_21');
+%     cd(loc_dest)
     
     loc_sit_dest = strcat(loc_dest,'\sit'); % source folder
     loc_stand_dest = strrep(loc_dest,'sit','stand');
     loc_walk_dest = strrep(loc_dest,'sit','walk');
+    
+%     if ~exist('sit', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('sit');
+%     end    
+%     
+%     if ~exist('stand', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('stand');
+%     end   
+%     
+%     if ~exist('walk', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('walk');
+%     end
+%     
+%     cd(loc_sit_dest)
+%     if ~exist('A', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('A');
+%         mkdir('B');
+%         mkdir('C');
+%     end
+%     
+%     cd(loc_stand_dest)
+%     if ~exist('A', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('A');
+%         mkdir('B');
+%         mkdir('C');
+%     end
+%     
+%     cd(loc_walk_dest)
+%     if ~exist('A', 'dir') % create destination folder if it doesn't already exist
+%         mkdir('A');
+%         mkdir('B');
+%         mkdir('C');
+%     end
     
     %% initialize variables
     rms_avg = zeros(length(Files),300);
@@ -214,14 +253,17 @@ for mm = 1:length(subs)
         targetsExtraAccLatency = minidx(targetsExtraAcc);
         trialsRejLatency = minidx(trialsRej);
         
-        accLat(k).targetsAcc = targetsAcc;
-        accLat(k).nonTargetsAcc = nonTargetsAcc;
-        accLat(k).targetsExtraAcc = targetsExtraAcc;
-        accLat(k).trialsRej = trialsRej;
-        accLat(k).targetLatency = targetLatency;
-        accLat(k).nonTargetsAccLatency = nonTargetsAccLatency;
-        accLat(k).targetsExtraAccLatency = targetsExtraAccLatency;
-        accLat(k).trialsRejLatency = trialsRejLatency;
+        accLat(k,mm).targetsAcc = targetsAcc;
+        accLat(k,mm).nonTargetsAcc = nonTargetsAcc;
+        accLat(k,mm).targetsExtraAcc = targetsExtraAcc;
+        accLat(k,mm).trialsRej = trialsRej;
+        accLat(k,mm).targetLatency = targetLatency;
+        accLat(k,mm).nonTargetsAccLatency = nonTargetsAccLatency;
+        accLat(k,mm).targetsExtraAccLatency = targetsExtraAccLatency;
+        accLat(k,mm).trialsRejLatency = trialsRejLatency;
+        accLat(k,mm).sub = sub;
+        accLat(k,mm).loc_source = loc_source;
+        accLat(k,mm).setNum = k;
         
         Trigger_accel_targetsAcc = zeros(length(Trigger_accel),1);
         Trigger_accel_nonTargetsAcc = zeros(length(Trigger_accel),1);
@@ -377,16 +419,39 @@ for mm = 1:length(subs)
         trials_Ay = squeeze(ALLEEG(end).data(2,:,:));
         trials_Az = squeeze(ALLEEG(end).data(3,:,:));
         
-        rms_Ax = rms(trials_Ax(:,accLat(k).targetsAcc));
-        rms_Ay = rms(trials_Ay(:,accLat(k).targetsAcc));
-        rms_Az = rms(trials_Az(:,accLat(k).targetsAcc));
+        trials_Ax_accepted = trials_Ax(:,accLat(k,mm).targetsAcc);
+        trials_Ay_accepted = trials_Ay(:,accLat(k,mm).targetsAcc);
+        trials_Az_accepted = trials_Az(:,accLat(k,mm).targetsAcc);
+        
+        rms_Ax = rms(trials_Ax_accepted);
+        rms_Ay = rms(trials_Ay_accepted);
+        rms_Az = rms(trials_Az_accepted);
         
         rms_avg = mean([rms_Ax;rms_Ay;rms_Az]);
-        datastruct(k).avg = rms_avg;
+        rms_mag = sqrt((rms_Ax.*rms_Ax)+(rms_Ay.*rms_Ay)+(rms_Az.*rms_Az));
+
+        datastruct(k).avg = rms_mag; % change this to get mag vs avg
+        
+        accel_trials(k,mm).rms_mag = rms_mag;
+        accel_trials(k,mm).rms_avg = rms_avg;
+        accel_trials(k,mm).sub = sub;
+        accel_trials(k,mm).loc_source = loc_source;
+        accel_trials(k,mm).setNum = k;
+        accel_trials(k,mm).trials_Ax = trials_Ax;
+        accel_trials(k,mm).trials_Ay = trials_Ay;
+        accel_trials(k,mm).trials_Az = trials_Az;        
+        accel_trials(k,mm).trials_Ax_accepted = trials_Ax_accepted;
+        accel_trials(k,mm).trials_Ay_accepted = trials_Ay_accepted;
+        accel_trials(k,mm).trials_Az_accepted = trials_Az_accepted;        
+        accel_trials(k,mm).targetsAcc = targetsAcc;
         
         figure
+        subplot(1,2,1)
+        histogram(rms_mag)
+        title('rms mag')
+        subplot(1,2,2)
         histogram(rms_avg)
-        
+        title('rms avg')
         %% save
         
         % save fig
@@ -417,7 +482,7 @@ for mm = 1:length(subs)
     rms_allsubs(mm).rmssit = rms_sit;
     rms_allsubs(mm).rmsstand = rms_stand;
     rms_allsubs(mm).rmswalk = rms_walk;
- 
+      
     rms_A = [datastruct(1).avg,datastruct(4).avg,datastruct(7).avg];
     rms_B = [datastruct(2).avg,datastruct(5).avg,datastruct(8).avg];
     rms_C = [datastruct(3).avg,datastruct(6).avg,datastruct(9).avg];
@@ -426,13 +491,33 @@ for mm = 1:length(subs)
     rms_allsubs(mm).rmsB = rms_B;
     rms_allsubs(mm).rmsC = rms_C;
     
+    rms_sitA = datastruct(1).avg;
+    rms_sitB = datastruct(2).avg;
+    rms_sitC = datastruct(3).avg;
+    rms_standA = datastruct(4).avg;
+    rms_standB = datastruct(5).avg;
+    rms_standC = datastruct(6).avg;
+    rms_walkA = datastruct(7).avg;
+    rms_walkB = datastruct(8).avg;
+    rms_walkC = datastruct(9).avg;
+    
+    rms_allsubs(mm).rmssitA = rms_sitA;
+    rms_allsubs(mm).rmssitB = rms_sitB;
+    rms_allsubs(mm).rmssitC = rms_sitC;
+    rms_allsubs(mm).rmsstandA = rms_standA;
+    rms_allsubs(mm).rmsstandB = rms_standB;
+    rms_allsubs(mm).rmsstandC = rms_standC;
+    rms_allsubs(mm).rmswalkA = rms_walkA;
+    rms_allsubs(mm).rmswalkB = rms_walkB;
+    rms_allsubs(mm).rmswalkC = rms_walkC;
+    
     edges = linspace(0, .2, 26); % Create 20 bins.
     
     figure
     subplot(1,3,1)
     histogram(rms_sit, 'BinEdges',edges);
     title('Sit')
-    xlabel('Average Gyro RMS')
+    xlabel('Accelerometer RMS Magnitude')
     ylabel('Trials')
     subplot(1,3,2)
     histogram(rms_stand, 'BinEdges',edges);
@@ -448,11 +533,12 @@ for mm = 1:length(subs)
         savefig(fnm)
     end
     
+    
     figure
     subplot(1,3,1)
     histogram(rms_A)
     title('A')
-    xlabel('Average Gyro RMS')
+    xlabel('Accelerometer RMS Magnitude')
     ylabel('Trials')
     subplot(1,3,2)
     histogram(rms_B)
@@ -468,36 +554,72 @@ for mm = 1:length(subs)
         savefig(fnm)
     end
     
-    % save data
+    % save rms averages
     fnm = sprintf('rms_all_%s.mat',setName);
     cd(loc_dest)
     if savefiles == 1
-        save(fnm,'ntrials_accel','rms_sit','rms_stand','rms_walk','rms_A','rms_B','rms_C','-mat');
+        save(fnm,'ntrials_accel','rms_sit','rms_stand','rms_walk','rms_A',...
+            'rms_B','rms_C','rms_sitA','rms_sitB','rms_sitC','rms_standA',...
+            'rms_standB','rms_standC','rms_walkA','rms_walkB','rms_walkC','-mat');
+    end
+    
+    if figs == 0
+        close all
     end
 end
 
-rms_sit_allsubs = [rms_allsubs(1).rmssit,rms_allsubs(2).rmssit,rms_allsubs(3).rmssit,rms_allsubs(4).rmssit,rms_allsubs(5).rmssit,rms_allsubs(6).rmssit];
-rms_stand_allsubs = [rms_allsubs(1).rmsstand,rms_allsubs(2).rmsstand,rms_allsubs(3).rmsstand,rms_allsubs(4).rmsstand,rms_allsubs(5).rmsstand,rms_allsubs(6).rmsstand];
-rms_walk_allsubs = [rms_allsubs(1).rmswalk,rms_allsubs(2).rmswalk,rms_allsubs(3).rmswalk,rms_allsubs(4).rmswalk,rms_allsubs(5).rmswalk,rms_allsubs(6).rmswalk];
+% save accel trials
+fnm = sprintf('accel_trials_allsubs.mat');
+cd(loc_save)
+if savefiles == 1
+    save(fnm,'accel_trials','-mat');
+end
+    
+% save accelLat
+fnm = sprintf('accLat_allsubs.mat');
+cd(loc_save)
+if savefiles == 1
+    save(fnm,'accLat','-mat');
+end
+    
+rms_sit_allsubs = [rms_allsubs(1).rmssit,rms_allsubs(2).rmssit,rms_allsubs(3).rmssit,rms_allsubs(4).rmssit,rms_allsubs(5).rmssit,rms_allsubs(6).rmssit,rms_allsubs(7).rmssit,rms_allsubs(8).rmssit,rms_allsubs(9).rmssit];
+rms_stand_allsubs = [rms_allsubs(1).rmsstand,rms_allsubs(2).rmsstand,rms_allsubs(3).rmsstand,rms_allsubs(4).rmsstand,rms_allsubs(5).rmsstand,rms_allsubs(6).rmsstand,rms_allsubs(7).rmsstand,rms_allsubs(8).rmsstand,rms_allsubs(9).rmsstand];
+rms_walk_allsubs = [rms_allsubs(1).rmswalk,rms_allsubs(2).rmswalk,rms_allsubs(3).rmswalk,rms_allsubs(4).rmswalk,rms_allsubs(5).rmswalk,rms_allsubs(6).rmswalk,rms_allsubs(7).rmswalk,rms_allsubs(8).rmswalk,rms_allsubs(9).rmswalk];
 
-rms_A_allsubs = [rms_allsubs(1).rmsA,rms_allsubs(2).rmsA,rms_allsubs(3).rmsA,rms_allsubs(4).rmsA,rms_allsubs(5).rmsA,rms_allsubs(6).rmsA];
-rms_B_allsubs = [rms_allsubs(1).rmsB,rms_allsubs(2).rmsB,rms_allsubs(3).rmsB,rms_allsubs(4).rmsB,rms_allsubs(5).rmsB,rms_allsubs(6).rmsB];
-rms_C_allsubs = [rms_allsubs(1).rmsC,rms_allsubs(2).rmsC,rms_allsubs(3).rmsC,rms_allsubs(4).rmsC,rms_allsubs(5).rmsC,rms_allsubs(6).rmsC];
+rms_A_allsubs = [rms_allsubs(1).rmsA,rms_allsubs(2).rmsA,rms_allsubs(3).rmsA,rms_allsubs(4).rmsA,rms_allsubs(5).rmsA,rms_allsubs(6).rmsA,rms_allsubs(7).rmsA,rms_allsubs(8).rmsA,rms_allsubs(9).rmsA];
+rms_B_allsubs = [rms_allsubs(1).rmsB,rms_allsubs(2).rmsB,rms_allsubs(3).rmsB,rms_allsubs(4).rmsB,rms_allsubs(5).rmsB,rms_allsubs(6).rmsB,rms_allsubs(7).rmsB,rms_allsubs(8).rmsB,rms_allsubs(9).rmsB];
+rms_C_allsubs = [rms_allsubs(1).rmsC,rms_allsubs(2).rmsC,rms_allsubs(3).rmsC,rms_allsubs(4).rmsC,rms_allsubs(5).rmsC,rms_allsubs(6).rmsC,rms_allsubs(7).rmsC,rms_allsubs(8).rmsC,rms_allsubs(9).rmsC];
 
-edges = linspace(0, .2, 7); % Create 6 bins.
+rms_sitA_allsubs = [rms_allsubs(1).rmssitA,rms_allsubs(2).rmssitA,rms_allsubs(3).rmssitA,rms_allsubs(4).rmssitA,rms_allsubs(5).rmssitA,rms_allsubs(6).rmssitA,rms_allsubs(7).rmssitA,rms_allsubs(8).rmssitA,rms_allsubs(9).rmssitA];
+rms_sitB_allsubs = [rms_allsubs(1).rmssitB,rms_allsubs(2).rmssitB,rms_allsubs(3).rmssitB,rms_allsubs(4).rmssitB,rms_allsubs(5).rmssitB,rms_allsubs(6).rmssitB,rms_allsubs(7).rmssitB,rms_allsubs(8).rmssitB,rms_allsubs(9).rmssitB];
+rms_sitC_allsubs = [rms_allsubs(1).rmssitC,rms_allsubs(2).rmssitC,rms_allsubs(3).rmssitC,rms_allsubs(4).rmssitC,rms_allsubs(5).rmssitC,rms_allsubs(6).rmssitC,rms_allsubs(7).rmssitC,rms_allsubs(8).rmssitC,rms_allsubs(9).rmssitC];
+rms_standA_allsubs = [rms_allsubs(1).rmsstandA,rms_allsubs(2).rmsstandA,rms_allsubs(3).rmsstandA,rms_allsubs(4).rmsstandA,rms_allsubs(5).rmsstandA,rms_allsubs(6).rmsstandA,rms_allsubs(7).rmsstandA,rms_allsubs(8).rmsstandA,rms_allsubs(9).rmsstandA];
+rms_standB_allsubs = [rms_allsubs(1).rmsstandB,rms_allsubs(2).rmsstandB,rms_allsubs(3).rmsstandB,rms_allsubs(4).rmsstandB,rms_allsubs(5).rmsstandB,rms_allsubs(6).rmsstandB,rms_allsubs(7).rmsstandB,rms_allsubs(8).rmsstandB,rms_allsubs(9).rmsstandB];
+rms_standC_allsubs = [rms_allsubs(1).rmsstandC,rms_allsubs(2).rmsstandC,rms_allsubs(3).rmsstandC,rms_allsubs(4).rmsstandC,rms_allsubs(5).rmsstandC,rms_allsubs(6).rmsstandC,rms_allsubs(7).rmsstandC,rms_allsubs(8).rmsstandC,rms_allsubs(9).rmsstandC];
+rms_walkA_allsubs = [rms_allsubs(1).rmswalkA,rms_allsubs(2).rmswalkA,rms_allsubs(3).rmswalkA,rms_allsubs(4).rmswalkA,rms_allsubs(5).rmswalkA,rms_allsubs(6).rmswalkA,rms_allsubs(7).rmswalkA,rms_allsubs(8).rmswalkA,rms_allsubs(9).rmswalkA];
+rms_walkB_allsubs = [rms_allsubs(1).rmswalkB,rms_allsubs(2).rmswalkB,rms_allsubs(3).rmswalkB,rms_allsubs(4).rmswalkB,rms_allsubs(5).rmswalkB,rms_allsubs(6).rmswalkB,rms_allsubs(7).rmswalkB,rms_allsubs(8).rmswalkB,rms_allsubs(9).rmswalkB];
+rms_walkC_allsubs = [rms_allsubs(1).rmswalkC,rms_allsubs(2).rmswalkC,rms_allsubs(3).rmswalkC,rms_allsubs(4).rmswalkC,rms_allsubs(5).rmswalkC,rms_allsubs(6).rmswalkC,rms_allsubs(7).rmswalkC,rms_allsubs(8).rmswalkC,rms_allsubs(9).rmswalkC];
+
+edges = linspace(0, max(rms_walk_allsubs), 9); % Create 8 bins.
+edges_sit = linspace(0, max(rms_sit_allsubs), 9); % Create 8 bins.
+edges_stand = linspace(0, max(rms_stand_allsubs), 9); % Create 8 bins.
+edges_walk = linspace(0, max(rms_walk_allsubs), 9); % Create 8 bins.
 
 figure
 subplot(1,3,1)
-histogram(rms_sit_allsubs, 'BinEdges',edges)
+histogram(rms_sit_allsubs, 'BinEdges',edges_sit)
+set(gca,'FontSize',14)
 title('Sit')
-xlabel('Average Gyro RMS')
 ylabel('Trials')
 subplot(1,3,2)
-histogram(rms_stand_allsubs, 'BinEdges',edges)
+histogram(rms_stand_allsubs, 'BinEdges',edges_stand)
+set(gca,'FontSize',14)
+xlabel('Head Motion RMS')
 title('Stand')
 subplot(1,3,3)
-histogram(rms_walk_allsubs, 'BinEdges',edges)
+histogram(rms_walk_allsubs, 'BinEdges',edges_walk)
 title('Walk')
+set(gca,'FontSize',14)
 
 axisHandle = gca;                         %handle to the axis that contains the histogram
 histHandle = axisHandle.Children;         %handle to the histogram
@@ -529,7 +651,7 @@ figure
 subplot(1,3,1)
 histogram(rms_A_allsubs, 'BinEdges',edges)
 title('A')
-xlabel('Average Gyro RMS')
+xlabel('Accelerometer RMS Magnitude')
 ylabel('Trials')
 subplot(1,3,2)
 histogram(rms_B_allsubs, 'BinEdges',edges)
@@ -541,6 +663,67 @@ title('C')
 % save fig
 if savefiles == 1
     fnm = sprintf('rms_ABC_%s.fig',setName);
+    cd(loc_save)
+    savefig(fnm)
+end
+
+
+figure
+subplot(1,3,1)
+histogram(rms_sitA_allsubs, 'BinEdges',edges)
+title('Sit A')
+xlabel('Accelerometer RMS Magnitude')
+ylabel('Trials')
+subplot(1,3,2)
+histogram(rms_sitB_allsubs, 'BinEdges',edges)
+title('Sit B')
+subplot(1,3,3)
+histogram(rms_sitC_allsubs, 'BinEdges',edges)
+title('Sit C')
+
+% save fig
+if savefiles == 1
+    fnm = sprintf('rms_sitABC_%s.fig',setName);
+    cd(loc_save)
+    savefig(fnm)
+end
+
+figure
+subplot(1,3,1)
+histogram(rms_standA_allsubs, 'BinEdges',edges)
+title('Stand A')
+xlabel('Accelerometer RMS Magnitude')
+ylabel('Trials')
+subplot(1,3,2)
+histogram(rms_standB_allsubs, 'BinEdges',edges)
+title('Stand B')
+subplot(1,3,3)
+histogram(rms_standC_allsubs, 'BinEdges',edges)
+title('Stand C')
+
+% save fig
+if savefiles == 1
+    fnm = sprintf('rms_standABC_%s.fig',setName);
+    cd(loc_save)
+    savefig(fnm)
+end
+
+figure
+subplot(1,3,1)
+histogram(rms_walkA_allsubs, 'BinEdges',edges)
+title('Walk A')
+xlabel('Accelerometer RMS Magnitude')
+ylabel('Trials')
+subplot(1,3,2)
+histogram(rms_walkB_allsubs, 'BinEdges',edges)
+title('Walk B')
+subplot(1,3,3)
+histogram(rms_walkC_allsubs, 'BinEdges',edges)
+title('Walk C')
+
+% save fig
+if savefiles == 1
+    fnm = sprintf('rms_walkABC_%s.fig',setName);
     cd(loc_save)
     savefig(fnm)
 end

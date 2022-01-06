@@ -6,15 +6,16 @@ load('Z:\Lab Member Folders\Margaret Swerdloff\EEG_gait\EEG\Matlab_data\Pilot2\c
 %%
 all_possible_subs = {'S003','S006','S007','S008','S009','S010','S012','S013','S014'};
 
-subs =  {'S003','S007','S010','S012','S013','S014'}; %these have the right amounts (37 targets)
+% subs =  {'S003','S007','S010','S012','S013','S014'}; %these have the right amounts (37 targets)
  % run all subs
-% subs = {'S014','S003'}; % stim conversion
+subs = all_possible_subs; 
+% subs = {'S006'}; 
 % subs = {'S026_SA_0002'}; % pt 1
 loc_user = 'C:\Users\mswerdloff\';
 loc_data = 'Z:\Lab Member folders\Margaret Swerdloff\EEG_gait\';
 loc_eeglab = [loc_user 'eeglab\eeglab2021_0'];
 loc_source = [loc_data 'EEG\Matlab_data\Pilot2\'];
-loc_save = [loc_data 'EEG\Matlab_data\Pilot2_Accel\'];
+loc_save = [loc_data 'EEG\Matlab_data\Pilot2_Accel\12_21_21\'];
 RejectedTrials_sub_eq = [];
 savefiles = 1;
 
@@ -86,27 +87,47 @@ for mm = 1:length(subs)
         
         typeA = [ALLEEG(1).urevent.type].';
         latencyA = [ALLEEG(1).urevent.latency].';
-        sessionA_rej = [latencyA, typeA, table2array(RejectedTrials_sub_eq(1:301,nn))];
+        if strcmp('sit',cond{nn})==1 && strcmp(sub,'S008')==1
+            latencyA_new = latencyA(1:end-1);
+            typeA_new = typeA(1:end-1);
+            latencyA = latencyA_new;
+            typeA = typeA_new;
+        end
+            sessionA_rej = [latencyA, typeA, table2array(RejectedTrials_sub_eq(1:301,nn))];
+
         
         typeB = [ALLEEG(2).urevent.type].';
         latencyB = [ALLEEG(2).urevent.latency].';
+        if strcmp(sub,'S009') == 1 && strcmp('sit',cond{nn})==1 %% S009 sit B
+            latencyB_new = [latencyB;zeros(301-length(latencyB),1)];
+            typeB_new = [typeB;zeros(301-length(latencyB),1)];
+            %   sessionB_rej = [latencyB_new, typeB_new, zeros(301,1)];
+            latencyB = latencyB_new;
+            typeB = typeB_new;
+        elseif strcmp(sub,'S006') == 1 && strcmp('stand',cond{nn})==1 %% S006 stand B
+            latencyB_new = [latencyB;zeros(301-length(latencyB),1)];
+            typeB_new = [typeB;zeros(301-length(latencyB),1)];
+            latencyB = latencyB_new;
+            typeB = typeB_new;
+        end
         sessionB_rej = [latencyB, typeB, table2array(RejectedTrials_sub_eq(302:602,nn))];
+    
         
         typeC = [ALLEEG(3).urevent.type].';
         latencyC = [ALLEEG(3).urevent.latency].';
         sessionC_rej = [latencyC, typeC, table2array(RejectedTrials_sub_eq(603:903,nn))];
-        
+   
         %%  for each session A, B, and C, count up the number of targets (1) and nontargets (2) that were included (and excluded targets (4))
         session_rej = sessionA_rej;
         session_acc = zeros(length(session_rej),1);
-        for ii = 1:length(session_rej)
-            if session_rej(ii,2) == 1 && session_rej(ii,3) == 0
-                session_acc(ii) = 1; % these are the accepted targets that were included
-            elseif session_rej(ii,2) == 1 && session_rej(ii,3) == 4
-                session_acc(ii) = 4; % these are the accepted targets that were extra and thus excluded
-            elseif session_rej(ii,2) == 2 && session_rej(ii,3) == 0
-                session_acc(ii) = 2; % these are the accepted nontargets
-            end
+        for ii = 1:length(session_rej)            
+                if session_rej(ii,2) == 1 && session_rej(ii,3) == 0
+                    session_acc(ii) = 1; % these are the accepted targets that were included
+                elseif session_rej(ii,2) == 1 && session_rej(ii,3) == 4
+                    session_acc(ii) = 4; % these are the accepted targets that were extra and thus excluded
+                elseif session_rej(ii,2) == 2 && session_rej(ii,3) == 0
+                    session_acc(ii) = 2; % these are the accepted nontargets
+                end
         end
         sessionA_acc = session_acc;
         [numel(find(session_acc == 1)) numel(find(session_acc == 4)) numel(find(session_acc == 2))]
@@ -114,13 +135,19 @@ for mm = 1:length(subs)
         session_rej = sessionB_rej;
         session_acc = zeros(length(session_rej),1);
         for ii = 1:length(session_rej)
-            if session_rej(ii,2) == 1 && session_rej(ii,3) == 0
-                session_acc(ii) = 1; % these are the accepted targets that were included
-            elseif session_rej(ii,2) == 1 && session_rej(ii,3) == 4
-                session_acc(ii) = 4; % these are the accepted targets that were extra and thus excluded
-            elseif session_rej(ii,2) == 2 && session_rej(ii,3) == 0
-                session_acc(ii) = 2; % these are the accepted nontargets
-            end
+%             if strcmp(sub,'S006')==1 && strcmp('stand',cond{nn})==1  % S006 stand B
+%                 sprintf('Warning: S006 stand B contains an error')
+% %             elseif strcmp(sub,'S009')==1 && strcmp('sit',cond{nn})==1 % S009 sit B
+% %                 sprintf('Warning: S009 sit B contains an error')
+%             else
+                if session_rej(ii,2) == 1 && session_rej(ii,3) == 0
+                    session_acc(ii) = 1; % these are the accepted targets that were included
+                elseif session_rej(ii,2) == 1 && session_rej(ii,3) == 4
+                    session_acc(ii) = 4; % these are the accepted targets that were extra and thus excluded
+                elseif session_rej(ii,2) == 2 && session_rej(ii,3) == 0
+                    session_acc(ii) = 2; % these are the accepted nontargets
+                end
+%             end
         end
         sessionB_acc = session_acc;
         [numel(find(session_acc == 1)) numel(find(session_acc == 4)) numel(find(session_acc == 2))]
@@ -142,7 +169,13 @@ for mm = 1:length(subs)
         % pause if there aren't the right number of accepter targets included
         num_acc_targets = numel(find(sessionA_acc==1))+numel(find(sessionB_acc==1))+numel(find(sessionC_acc==1))
         if num_acc_targets ~= 37
-            pause
+%             if strcmp(sub,'S006')==1 && strcmp('stand',cond{nn})==1 % stand B S006
+%                 sprintf('Warning: S006 stand B contains no accepted targets')
+%             elseif strcmp(sub,'S009')==1 && strcmp('sit',cond{nn})==1 % sit B S009
+%                 sprintf('Warning: S009 sit B contains no accepted targets')
+%             else
+                pause
+%             end
         end
               
         
